@@ -1,0 +1,38 @@
+def version_num='0.0.1'
+
+apply from: 'http://ves-ebi-de:8081/gradle-common/common.gradle'
+
+archivesBaseName = 'ena-taxonomy-client'
+ant.buildnumber()
+version = version_num + "." + ant.properties['build.number']
+
+apply plugin: 'checkstyle'
+apply plugin: 'jdepend'
+apply plugin: 'findbugs'
+
+def spring_version = '4.0.3.RELEASE'
+
+repositories {
+  mavenCentral()
+}
+
+test {
+  filter {
+     includeTestsMatching "*Should"
+  }
+}
+
+dependencies {
+  compile "org.springframework:spring-web:${spring_version}"
+  testCompile "junit:junit:4.11"
+  testCompile "org.springframework:spring-test:${spring_version}"
+  testCompile "com.github.tomakehurst:wiremock:1.42"
+}
+
+jar {
+  manifest {
+    attributes("Implementation-Title": "ENA Taxonomy Client (Gradle build)", "Implementation-Version": version)
+  }
+}
+
+task wrapper(type: Wrapper) { gradleVersion = '1.12' }
