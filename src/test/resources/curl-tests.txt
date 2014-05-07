@@ -1,0 +1,1 @@
+curl -i -X POST -H "Content-Type:application/json" --data '{"task":"match_name","name":"Mus"}' http://www.ebi.ac.uk/ena/data/warehouse/taxonomy

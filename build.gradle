@@ -24,6 +24,8 @@ test {
 
 dependencies {
   compile "org.springframework:spring-web:${spring_version}"
+  compile "com.fasterxml.jackson.core:jackson-core:2.3.3"
+  compile "com.fasterxml.jackson.core:jackson-databind:2.3.3"
   testCompile "junit:junit:4.11"
   testCompile "org.springframework:spring-test:${spring_version}"
   testCompile "com.github.tomakehurst:wiremock:1.42"
