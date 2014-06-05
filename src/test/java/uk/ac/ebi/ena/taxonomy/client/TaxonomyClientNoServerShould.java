@@ -15,9 +15,12 @@ public class TaxonomyClientNoServerShould {
   }
 
   @Test (expected = TaxonomyException.class)
-  public void test_check_session_with_invalid_session_id() throws TaxonomyException {
+  public void test_suggestTaxa_with_invalid_session_id() throws TaxonomyException {
     taxonomyClient.suggestTaxa("partialName");
   }
 
-
+  @Test (expected = TaxonomyException.class)
+  public void test_getTaxonById_with_invalid_session_id() throws TaxonomyException {
+    taxonomyClient.getTaxonById(1234);
+  }
 }
