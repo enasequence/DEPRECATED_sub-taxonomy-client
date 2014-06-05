@@ -6,7 +6,7 @@ archivesBaseName = 'ena-taxonomy-client'
 ant.buildnumber()
 version = version_num + "." + ant.properties['build.number']
 
-apply plugin: 'checkstyle'
+//apply plugin: 'checkstyle'
 apply plugin: 'jdepend'
 apply plugin: 'findbugs'
 
