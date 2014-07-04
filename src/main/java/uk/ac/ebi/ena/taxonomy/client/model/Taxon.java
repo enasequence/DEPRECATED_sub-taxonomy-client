@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Taxon {
 
   @JsonProperty("tax_id")
-  private Long taxId;
+  private Long taxId = 0L;
   private String name;
   @JsonProperty("scientific_name")
   private String scientificName;

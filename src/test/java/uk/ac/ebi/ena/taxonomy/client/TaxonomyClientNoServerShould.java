@@ -23,4 +23,5 @@ public class TaxonomyClientNoServerShould {
   public void test_getTaxonById_with_invalid_session_id() throws TaxonomyException {
     taxonomyClient.getTaxonById(1234);
   }
+  
 }

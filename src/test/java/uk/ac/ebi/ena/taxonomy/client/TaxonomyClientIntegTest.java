@@ -18,6 +18,7 @@ import java.util.List;
 
 public class TaxonomyClientIntegTest {
 
+  private static final int INVALID_TAX_ID = 9604;
   private static final int LIMIT = 10;
   private TaxonomyClient taxonomyClient;
 
@@ -76,9 +77,40 @@ public class TaxonomyClientIntegTest {
   }
   
   @Test
+  public void test_invalid_get_taxon_by_id()  throws Exception {
+    final Taxon taxon = taxonomyClient.getTaxonById(INVALID_TAX_ID);
+    assertNotNull(taxon);
+    assertTrue(0L==taxon.getTaxId());
+  }
+  
+  @Test
   public void test_get_taxon_by_scientificName()  throws Exception {
     final Taxon taxon = taxonomyClient.getTaxonByScientificName(TAXONOMY_SCIENTIFIC_NAME_QUERY);
     assertNotNull(taxon);
     assertTrue(TAXONOMY_ID_QUERY==taxon.getTaxId());
+  }
+  
+  @Test
+  public void test_isScientificNameValid()  throws Exception {
+    final boolean valid = taxonomyClient.isScientificNameValid(TAXONOMY_SCIENTIFIC_NAME_QUERY);
+    assertTrue(valid);
+  }
+  
+  @Test
+  public void test_invalid_isScientificNameValid()  throws Exception {
+    final boolean valid = taxonomyClient.isScientificNameValid("fish");
+    assertFalse(valid);
+  }
+  
+  @Test
+  public void test_isTaxIdValid() throws Exception {
+    final boolean valid = taxonomyClient.isTaxIdValid(TAXONOMY_ID_QUERY);
+    assertTrue(valid);
+  }
+
+  @Test
+  public void test_invalid_isTaxIdValid() throws Exception {
+    final boolean valid = taxonomyClient.isTaxIdValid(INVALID_TAX_ID);
+    assertFalse(valid);
   }
 }

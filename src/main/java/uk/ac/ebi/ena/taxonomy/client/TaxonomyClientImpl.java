@@ -8,6 +8,8 @@ import uk.ac.ebi.ena.taxonomy.client.model.FetchRequest;
 import uk.ac.ebi.ena.taxonomy.client.model.MatchNameRequest;
 import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
 import uk.ac.ebi.ena.taxonomy.client.model.TaxonomyResponse;
+import uk.ac.ebi.ena.taxonomy.client.model.ValidateRequest;
+import uk.ac.ebi.ena.taxonomy.client.model.ValidationResponse;
 
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -41,8 +43,8 @@ public class TaxonomyClientImpl implements TaxonomyClient {
 
   @Override
   public boolean isScientificNameValid(final String scientificName) {
-    // TODO Auto-generated method stub
-    return false;
+    final ValidateRequest validateRequest = new ValidateRequest.Builder().scientific_name(scientificName).build();
+    return validate(validateRequest);
   }
 
   @Override
@@ -68,6 +70,19 @@ public class TaxonomyClientImpl implements TaxonomyClient {
     final MatchNameRequest matchNameRequest = new MatchNameRequest.Builder().name(partialName).limit(limit).build();
     return suggestTaxa(matchNameRequest);
   }
+  
+  private boolean validate(final ValidateRequest validateRequest) {
+    try {
+      final String requestUrl = webServiceUrl + REST_TAXONOMY;
+      final ValidationResponse validationResponse =
+          restTemplate.postForObject(requestUrl, validateRequest, ValidationResponse.class);
+      return validationResponse.getValid();
+    } catch (final ResourceAccessException e) {
+      throw new TaxonomyException(SERVICE_UNAVAILABLE);
+    } catch (final Exception e) {
+      throw new TaxonomyException(e.getMessage());
+    }
+  }
 
   private Taxon fetchTaxon(final FetchRequest fetchRequest) {
     try {
@@ -78,7 +93,8 @@ public class TaxonomyClientImpl implements TaxonomyClient {
     } catch (final ResourceAccessException e) {
       throw new TaxonomyException(SERVICE_UNAVAILABLE);
     } catch (final Exception e) {
-      throw new TaxonomyException(e.getMessage());
+      return new Taxon();
+      //throw new TaxonomyException(e.getMessage());
     }
   }
 
@@ -93,5 +109,11 @@ public class TaxonomyClientImpl implements TaxonomyClient {
     } catch (final Exception e) {
       throw new TaxonomyException(e.getMessage());
     }
+  }
+
+  @Override
+  public boolean isTaxIdValid(long taxId) throws TaxonomyException {
+    Taxon taxon = getTaxonById(taxId);
+    return taxon.getTaxId() > 0;
   }
 }

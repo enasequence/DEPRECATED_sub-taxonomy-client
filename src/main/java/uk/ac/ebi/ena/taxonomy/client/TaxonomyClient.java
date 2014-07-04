@@ -19,5 +19,6 @@ public interface TaxonomyClient {
   Taxon getTaxonById(long taxId) throws TaxonomyException;
 
   boolean isScientificNameValid(String scientificName) throws TaxonomyException;
-
+  
+  boolean isTaxIdValid(long taxId) throws TaxonomyException;
 }
