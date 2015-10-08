@@ -11,47 +11,6 @@ public class TaxonomyResponse {
   private String name;
   private List<Taxon> taxa;
 
-  @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final TaxonomyResponse other = (TaxonomyResponse) obj;
-    if (limit != other.limit) {
-      return false;
-    }
-    if (metagenome != other.metagenome) {
-      return false;
-    }
-    if (name == null) {
-      if (other.name != null) {
-        return false;
-      }
-    } else if (!name.equals(other.name)) {
-      return false;
-    }
-    if (tax_id == null) {
-      if (other.tax_id != null) {
-        return false;
-      }
-    } else if (!tax_id.equals(other.tax_id)) {
-      return false;
-    }
-    if (taxa == null) {
-      if (other.taxa != null) {
-        return false;
-      }
-    } else if (!taxa.equals(other.taxa)) {
-      return false;
-    }
-    return true;
-  }
   public int getLimit() {
     return limit;
   }
@@ -73,14 +32,31 @@ public class TaxonomyResponse {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    TaxonomyResponse that = (TaxonomyResponse) o;
+
+    if (limit != that.limit) return false;
+    if (metagenome != that.metagenome) return false;
+    if (tax_id != null ? !tax_id.equals(that.tax_id) : that.tax_id != null) return false;
+    if (scientific_name != null ? !scientific_name.equals(that.scientific_name) : that.scientific_name != null)
+      return false;
+    if (name != null ? !name.equals(that.name) : that.name != null) return false;
+    if (taxa != null ? !taxa.equals(that.taxa) : that.taxa != null) return false;
+
+    return true;
+  }
+
+  @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = (prime * result) + limit;
-    result = (prime * result) + (metagenome ? 1231 : 1237);
-    result = (prime * result) + ((name == null) ? 0 : name.hashCode());
-    result = (prime * result) + ((tax_id == null) ? 0 : tax_id.hashCode());
-    result = (prime * result) + ((taxa == null) ? 0 : taxa.hashCode());
+    int result = limit;
+    result = 31 * result + (metagenome ? 1 : 0);
+    result = 31 * result + (tax_id != null ? tax_id.hashCode() : 0);
+    result = 31 * result + (scientific_name != null ? scientific_name.hashCode() : 0);
+    result = 31 * result + (name != null ? name.hashCode() : 0);
+    result = 31 * result + (taxa != null ? taxa.hashCode() : 0);
     return result;
   }
 
@@ -114,8 +90,14 @@ public class TaxonomyResponse {
 
   @Override
   public String toString() {
-    return "TaxonomyResponse [limit=" + limit + ", metagenome=" + metagenome + ", tax_id=" + tax_id + ", name=" + name
-        + ", taxa=" + taxa + "]";
+    return "TaxonomyResponse{" +
+            "limit=" + limit +
+            ", metagenome=" + metagenome +
+            ", tax_id='" + tax_id + '\'' +
+            ", scientific_name='" + scientific_name + '\'' +
+            ", name='" + name + '\'' +
+            ", taxa=" + taxa +
+            '}';
   }
 
 
