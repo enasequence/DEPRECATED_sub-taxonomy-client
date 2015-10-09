@@ -1,31 +1,20 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
-import static uk.ac.ebi.ena.taxonomy.client.TestConstants.SERVICE_URL;
-import static uk.ac.ebi.ena.taxonomy.client.TestConstants.TAXONOMY_ID_QUERY;
-import static uk.ac.ebi.ena.taxonomy.client.TestConstants.*;
-
-import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.ebi.ena.taxonomy.client.model.LegacyTaxon;
+import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
 
 import java.util.List;
 
-public class TaxonomyClientIntegTest {
+import static org.junit.Assert.*;
+import static uk.ac.ebi.ena.taxonomy.client.TestConstants.*;
 
-  private static final int INVALID_TAX_ID = 9604;
+public abstract class TaxonomyClientIntegTest {
+
+  private static final int INVALID_TAX_ID = 9607;
   private static final int LIMIT = 10;
-  private TaxonomyClient taxonomyClient;
-
-  @Before
-  public void setup() {
-    taxonomyClient = new TaxonomyClientImpl(SERVICE_URL);
-  }
+  protected TaxonomyClient taxonomyClient;
 
   @Test
   public void test_suggest_taxa()  throws Exception {
@@ -85,9 +74,9 @@ public class TaxonomyClientIntegTest {
   
   @Test
   public void test_get_taxon_by_scientificName()  throws Exception {
-    final Taxon taxon = taxonomyClient.getTaxonByScientificName(TAXONOMY_SCIENTIFIC_NAME_QUERY);
-    assertNotNull(taxon);
-    assertTrue(TAXONOMY_ID_QUERY==taxon.getTaxId());
+    final List<Taxon> taxa = taxonomyClient.getTaxonByScientificName(TAXONOMY_SCIENTIFIC_NAME_QUERY);
+    assertNotNull(taxa.get(0));
+    assertTrue(TAXONOMY_ID_QUERY==taxa.get(0).getTaxId());
   }
   
   @Test

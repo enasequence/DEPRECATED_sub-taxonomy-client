@@ -3,7 +3,7 @@ package uk.ac.ebi.ena.taxonomy.client;
 import static uk.ac.ebi.ena.taxonomy.client.TaxonomyUrls.REST_TAXONOMY;
 import static uk.ac.ebi.ena.taxonomy.client.TestConstants.*;
 
-import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
+import uk.ac.ebi.ena.taxonomy.client.model.LegacyTaxon;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
 
 import java.util.List;
 
@@ -72,17 +73,17 @@ public class TaxonomyClientShould {
             .withStatus(200)
             .withHeader("Content-Type", "application/json;charset=UTF-8")
             .withBody("{\"taxa\":[{\"rank\":\"species\",\"name\":null,\"common_name\":\"human\",\"tax_id\":9606,\"scientific_name\":\"Homo sapiens\"}],\"scientific_name\":\"Homo sapiens\"}")));
-    final Taxon taxon = taxonomyClient.getTaxonByScientificName(TAXONOMY_SCIENTIFIC_NAME_QUERY);
-    assertNotNull(taxon);
-    assertEquals(TAXONOMY_SCIENTIFIC_NAME_QUERY,taxon.getScientificName());
-    System.out.println(taxon.toString());
+    final List<Taxon> taxa = taxonomyClient.getTaxonByScientificName(TAXONOMY_SCIENTIFIC_NAME_QUERY);
+    assertNotNull(taxa.get(0));
+    assertEquals(TAXONOMY_SCIENTIFIC_NAME_QUERY,taxa.get(0).getScientificName());
+    System.out.println(taxa.get(0).toString());
     verify(postRequestedFor(urlEqualTo(url)));
   }
 
    
   @Before
   public void setup() {
-    taxonomyClient = new TaxonomyClientImpl("http://localhost:" + MOCK_SERVER_PORT);
+    taxonomyClient = new TaxonomyClientLegacyImpl("http://localhost:" + MOCK_SERVER_PORT);
   }
 
 }

@@ -3,16 +3,11 @@ package uk.ac.ebi.ena.taxonomy.client;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TaxonomyClientNoServerShould {
+public abstract class TaxonomyClientNoServerShould {
 
-  private static final String MISSING_SERVER_URL = "http://localhost/nothing";
+  protected static final String MISSING_SERVER_URL = "http://localhost/nothing";
 
-  private TaxonomyClient taxonomyClient;
-
-  @Before
-  public void setup() {
-    taxonomyClient = new TaxonomyClientImpl(MISSING_SERVER_URL);
-  }
+  protected TaxonomyClient taxonomyClient;
 
   @Test (expected = TaxonomyException.class)
   public void test_suggestTaxa_with_invalid_session_id() throws TaxonomyException {

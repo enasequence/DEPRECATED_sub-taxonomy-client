@@ -9,7 +9,7 @@ public class TaxonomyResponse {
   private String tax_id;
   private String scientific_name;
   private String name;
-  private List<Taxon> taxa;
+  private List<LegacyTaxon> taxa;
 
   public int getLimit() {
     return limit;
@@ -27,7 +27,7 @@ public class TaxonomyResponse {
     return tax_id;
   }
 
-  public List<Taxon> getTaxa() {
+  public List<LegacyTaxon> getTaxa() {
     return taxa;
   }
 
@@ -84,7 +84,7 @@ public class TaxonomyResponse {
     this.tax_id = tax_id;
   }
 
-  public void setTaxa(final List<Taxon> taxa) {
+  public void setTaxa(final List<LegacyTaxon> taxa) {
     this.taxa = taxa;
   }
 

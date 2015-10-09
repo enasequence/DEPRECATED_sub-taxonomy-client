@@ -5,11 +5,11 @@ import static com.google.code.beanmatchers.BeanMatchers.*;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TaxonomyReponseTest {
+public class LegacyTaxonTest {
 
   @Test
   public void testBean() {
-      assertThat(TaxonomyResponse.class, allOf(
+      assertThat(LegacyTaxon.class, allOf(
               hasValidBeanConstructor(),
               hasValidGettersAndSetters(),
               hasValidBeanHashCode(),

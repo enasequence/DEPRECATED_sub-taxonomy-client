@@ -2,21 +2,17 @@ package uk.ac.ebi.ena.taxonomy.client;
 
 import static uk.ac.ebi.ena.taxonomy.client.TaxonomyUrls.REST_TAXONOMY;
 
-import uk.ac.ebi.ena.taxonomy.client.model.FetchByScientificNameRequest;
-import uk.ac.ebi.ena.taxonomy.client.model.FetchByTaxIdRequest;
-import uk.ac.ebi.ena.taxonomy.client.model.FetchRequest;
-import uk.ac.ebi.ena.taxonomy.client.model.MatchNameRequest;
-import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
-import uk.ac.ebi.ena.taxonomy.client.model.TaxonomyResponse;
-import uk.ac.ebi.ena.taxonomy.client.model.ValidateRequest;
-import uk.ac.ebi.ena.taxonomy.client.model.ValidationResponse;
+import uk.ac.ebi.ena.taxonomy.client.model.*;
+import uk.ac.ebi.ena.taxonomy.client.model.LegacyTaxon;
 
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class TaxonomyClientImpl implements TaxonomyClient {
+public class TaxonomyClientLegacyImpl implements TaxonomyClient {
 
   private static final String SERVICE_UNAVAILABLE = "The service is currently unavailable, please try again later.";
 
@@ -24,7 +20,7 @@ public class TaxonomyClientImpl implements TaxonomyClient {
 
   private final String webServiceUrl;
 
-  public TaxonomyClientImpl(final String webServiceUrl) {
+  public TaxonomyClientLegacyImpl(final String webServiceUrl) {
     restTemplate = new RestTemplate();
     this.webServiceUrl = webServiceUrl;
   }
@@ -36,9 +32,9 @@ public class TaxonomyClientImpl implements TaxonomyClient {
   }
 
   @Override
-  public Taxon getTaxonByScientificName(final String scientificName) {
+  public List<Taxon> getTaxonByScientificName(final String scientificName) {
     final FetchByScientificNameRequest fetchRequest = new FetchByScientificNameRequest.Builder().scientific_name(scientificName).build();
-    return fetchTaxon(fetchRequest);
+    return Arrays.asList(fetchTaxon(fetchRequest));
   }
 
   @Override
@@ -93,8 +89,7 @@ public class TaxonomyClientImpl implements TaxonomyClient {
     } catch (final ResourceAccessException e) {
       throw new TaxonomyException(SERVICE_UNAVAILABLE);
     } catch (final Exception e) {
-      return new Taxon();
-      //throw new TaxonomyException(e.getMessage());
+      return new LegacyTaxon();
     }
   }
 
@@ -103,7 +98,7 @@ public class TaxonomyClientImpl implements TaxonomyClient {
       final String requestUrl = webServiceUrl + REST_TAXONOMY;
       final TaxonomyResponse taxonomyResponse =
           restTemplate.postForObject(requestUrl, matchNameRequest, TaxonomyResponse.class);
-      return taxonomyResponse.getTaxa();
+      return new ArrayList<Taxon>(taxonomyResponse.getTaxa());
     } catch (final ResourceAccessException e) {
       throw new TaxonomyException(SERVICE_UNAVAILABLE);
     } catch (final Exception e) {

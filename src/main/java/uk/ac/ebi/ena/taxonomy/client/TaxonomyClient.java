@@ -13,9 +13,9 @@ public interface TaxonomyClient {
   List<Taxon> suggestTaxa(String partialName, boolean metagenome, int limit) throws TaxonomyException;
   
   List<Taxon> suggestTaxa(String partialName, int limit) throws TaxonomyException;
-  
-  Taxon getTaxonByScientificName(String scientificName) throws TaxonomyException;
-  
+
+  List<Taxon> getTaxonByScientificName(String scientificName) throws TaxonomyException;
+
   Taxon getTaxonById(long taxId) throws TaxonomyException;
 
   boolean isScientificNameValid(String scientificName) throws TaxonomyException;

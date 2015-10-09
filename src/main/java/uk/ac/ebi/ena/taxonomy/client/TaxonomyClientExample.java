@@ -1,5 +1,6 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
+import uk.ac.ebi.ena.taxonomy.client.model.LegacyTaxon;
 import uk.ac.ebi.ena.taxonomy.client.model.Taxon;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public class TaxonomyClientExample {
    TaxonomyClient taxonomyClient;
 
   public TaxonomyClientExample(String serviceUrl) {
-    taxonomyClient = new TaxonomyClientImpl(serviceUrl);
+    taxonomyClient = new TaxonomyClientLegacyImpl(serviceUrl);
   }
 
   public static void main(final String[] args) {
