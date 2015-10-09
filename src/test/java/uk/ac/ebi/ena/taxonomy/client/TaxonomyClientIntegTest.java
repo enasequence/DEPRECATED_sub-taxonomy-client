@@ -14,6 +14,7 @@ public abstract class TaxonomyClientIntegTest {
 
   private static final int INVALID_TAX_ID = 9607;
   private static final int LIMIT = 10;
+
   protected TaxonomyClient taxonomyClient;
 
   @Test
@@ -25,10 +26,39 @@ public abstract class TaxonomyClientIntegTest {
       assertTrue(taxon.getName().startsWith(TAXONOMY_NAME_QUERY));
     }
   }
+
+  @Test
+  public void test_suggest_taxa_with_invalid_search_1()  throws Exception {
+    final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(INVALID_TAXONOMY_NAME_QUERY);
+    assertTrue(taxonSuggestionList.isEmpty());
+  }
+
+  @Test
+  public void test_suggest_taxa_with_invalid_search_2()  throws Exception {
+    final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(INVALID_TAXONOMY_NAME_QUERY,false,10);
+    assertTrue(taxonSuggestionList.isEmpty());
+  }
+
+  @Test
+  public void test_suggest_taxa_with_invalid_search_3()  throws Exception {
+    final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(INVALID_TAXONOMY_NAME_QUERY,false);
+    assertTrue(taxonSuggestionList.isEmpty());
+  }
   
   @Test
-  public void test_suggest_taxa_with_limit()  throws Exception {
+  public void test_suggest_taxa_with_limit_1()  throws Exception {
     final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(TAXONOMY_NAME_QUERY, LIMIT);
+    assertFalse(taxonSuggestionList.isEmpty());
+    assertEquals(LIMIT,taxonSuggestionList.size());
+    for (final Taxon taxon : taxonSuggestionList)
+    {
+      assertTrue(taxon.getName().startsWith(TAXONOMY_NAME_QUERY));
+    }
+  }
+
+  @Test
+  public void test_suggest_taxa_with_limit_2()  throws Exception {
+    final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(TAXONOMY_NAME_QUERY, false, LIMIT);
     assertFalse(taxonSuggestionList.isEmpty());
     assertEquals(LIMIT,taxonSuggestionList.size());
     for (final Taxon taxon : taxonSuggestionList)
@@ -49,7 +79,7 @@ public abstract class TaxonomyClientIntegTest {
   
   @Test
   public void test_suggest_taxa_with_meta_genome_and_limit()  throws Exception {
-    final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(TAXONOMY_NAME_QUERY, false, 10);
+    final List<Taxon> taxonSuggestionList = taxonomyClient.suggestTaxa(TAXONOMY_NAME_QUERY, false, LIMIT);
     assertFalse(taxonSuggestionList.isEmpty());
     assertEquals(LIMIT,taxonSuggestionList.size());
     for (final Taxon taxon : taxonSuggestionList)

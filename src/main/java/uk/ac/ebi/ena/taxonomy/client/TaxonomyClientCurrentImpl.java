@@ -27,13 +27,7 @@ public class TaxonomyClientCurrentImpl implements TaxonomyClient {
 
     @Override
     public List<Taxon> suggestTaxa(String partialName) throws TaxonomyException {
-        try {
-            String requestUrl = webServiceUrl + "/v1/taxon/suggest-for-submission/{partialName}";
-            Taxon[] taxa = restTemplate.getForObject(requestUrl, CurrentTaxon[].class, partialName);
-            return Arrays.asList(taxa);
-        } catch (final ResourceAccessException e) {
-            throw new TaxonomyException(SERVICE_UNAVAILABLE);
-        }
+        return suggestTaxa(partialName, false, DEFAULT_LIMIT);
     }
 
     @Override
@@ -47,6 +41,11 @@ public class TaxonomyClientCurrentImpl implements TaxonomyClient {
             String requestUrl = webServiceUrl + "/v1/taxon/suggest-for-submission/{partialName}?limit={limit}";
             Taxon[] taxa = restTemplate.getForObject(requestUrl, CurrentTaxon[].class, partialName, limit);
             return Arrays.asList(taxa);
+        } catch (final HttpClientErrorException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return new ArrayList();
+            }
+            throw new TaxonomyException(SERVICE_ERROR + ": " + e.getMessage());
         } catch (final ResourceAccessException e) {
             throw new TaxonomyException(SERVICE_UNAVAILABLE);
         }
@@ -54,7 +53,7 @@ public class TaxonomyClientCurrentImpl implements TaxonomyClient {
 
     @Override
     public List<Taxon> suggestTaxa(String partialName, int limit) throws TaxonomyException {
-        return suggestTaxa(partialName, false, DEFAULT_LIMIT);
+        return suggestTaxa(partialName, false, limit);
     }
 
     @Override
