@@ -10,7 +10,7 @@ public class TaxonomyClientExample {
    TaxonomyClient taxonomyClient;
 
   public TaxonomyClientExample(String serviceUrl) {
-    taxonomyClient = new TaxonomyClientLegacyImpl(serviceUrl);
+    taxonomyClient = new TaxonomyClientCurrentImpl(serviceUrl);
   }
 
   public static void main(final String[] args) {
@@ -50,8 +50,8 @@ public class TaxonomyClientExample {
       sb.append('\t');
       sb.append(taxon.getScientificName());
       sb.append('\n');
-
     }
+    System.out.println(sb.toString());
   }
 
 }
