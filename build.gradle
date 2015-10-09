@@ -1,6 +1,5 @@
-def version_num='1.0.1'
+def version_num = '2.0.0'
 
-archivesBaseName = 'ena-taxonomy-client'
 version = version_num
 
 apply plugin: 'maven-publish'
@@ -10,9 +9,9 @@ apply plugin: 'eclipse'
 group = 'uk.ac.ebi.ena.taxonomy'
 
 repositories {
-  mavenLocal()
-  maven{ url "http://ves-ebi-de:8081/artifactory/gradle" }
-  mavenCentral()
+    mavenLocal()
+    maven { url "http://ves-ebi-de:8081/artifactory/gradle" }
+    mavenCentral()
 }
 
 sourceCompatibility = 1.6
@@ -21,43 +20,43 @@ targetCompatibility = 1.6
 ext { springVersion = "4.0.5.RELEASE" }
 
 test {
-  filter { includeTestsMatching "*Should" }
+    filter { includeTestsMatching "*Should" }
 }
 
 dependencies {
-  compile "org.springframework:spring-web:${springVersion}"
-  compile "com.fasterxml.jackson.core:jackson-core:2.3.3"
-  compile "com.fasterxml.jackson.core:jackson-databind:2.3.3"
-  testCompile "junit:junit:4.11"
-  testCompile "com.google.code.bean-matchers:bean-matchers:0.9"
-  testCompile "org.springframework:spring-test:${springVersion}"
-  testCompile "com.github.tomakehurst:wiremock:1.42"
+    compile "org.springframework:spring-web:${springVersion}"
+    compile "com.fasterxml.jackson.core:jackson-core:2.3.3"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.3.3"
+    testCompile "junit:junit:4.11"
+    testCompile "com.google.code.bean-matchers:bean-matchers:0.9"
+    testCompile "org.springframework:spring-test:${springVersion}"
+    testCompile "com.github.tomakehurst:wiremock:1.42"
 }
 
 jar {
-  manifest {
-    attributes("Implementation-Title": "ENA Taxonomy Client (Gradle build)", "Implementation-Version": version)
-  }
+    manifest {
+        attributes("Implementation-Title": "ENA Taxonomy Client (Gradle build)", "Implementation-Version": version)
+    }
 }
 
 task sourceJar(type: Jar) { from sourceSets.main.allJava }
 
 publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      from components.java
-      artifact sourceJar { classifier "sources" }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar { classifier "sources" }
+        }
     }
-  }
-  repositories {
-    maven {
-      credentials {
-        username 'admin'
-        password 'ena-artifactory'
-      }
-      url "http://ves-ebi-de:8081/artifactory/libs-release-local"
+    repositories {
+        maven {
+            credentials {
+                username 'admin'
+                password 'ena-artifactory'
+            }
+            url "http://ves-ebi-de:8081/artifactory/libs-release-local"
+        }
     }
-  }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '1.12' }
+task wrapper(type: Wrapper) { gradleVersion = '2.7' }
