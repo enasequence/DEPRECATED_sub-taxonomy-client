@@ -1,6 +1,31 @@
-def version_num = '2.0.1'
+def version_num = '2.0.1-WI-250'
 
 version = version_num
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "http://ves-ebi-de:8081/artifactory/gradle" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.1"
+    }
+}
+
+apply plugin: "jacoco"
+apply plugin: "org.sonarqube"
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://ves-ebi-de:9000"
+        property "sonar.jdbc.url", "jdbc:mysql://mysql-ena-sonar-prod:4487/sonar?useUnicode=true&characterEncoding=utf8"
+        property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+        property "sonar.jdbc.username", "sonar"
+        property "sonar.jdbc.password", "sonar"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
@@ -59,4 +84,12 @@ publishing {
     }
 }
 
-task wrapper(type: Wrapper) { gradleVersion = '2.7' }
+task wrapper(type: Wrapper) { gradleVersion = '2.9' }
+
+jar.manifest {
+    attributes('Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Source-Compatibility': project.sourceCompatibility,
+            'Target-Compatibility': project.targetCompatibility
+    )
+}
