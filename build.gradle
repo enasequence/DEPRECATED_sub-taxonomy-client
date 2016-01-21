@@ -1,4 +1,4 @@
-def version_num = '2.0.1-WI-250'
+def version_num = '2.1.0'
 
 version = version_num
 
