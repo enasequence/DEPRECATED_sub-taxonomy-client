@@ -10,7 +10,7 @@ Daniel Vaughan
 
 ## Build and Deployments
 
-[See Confluence page](http://www.ebi.ac.uk/seqdb/confluence/display/EMBL/Checklist+Editor+-+Checkout%2C+Build+and+Deploy)
+[See Confluence page](http://www.ebi.ac.uk/seqdb/confluence/display/EMBL/ENA+Taxonomy+Client+-+Checkout%2C+Build%2C+Publish)
 
 ## License
 
