@@ -6,6 +6,7 @@ public class CurrentTaxon implements Taxon {
     private String scientificName;
     private String commonName;
     private String displayName;
+    private boolean submittable;
 
     public Long getTaxId() {
         return taxId;
@@ -45,17 +46,40 @@ public class CurrentTaxon implements Taxon {
     }
 
     @Override
+    public boolean isSubmittable() {
+        return submittable;
+    }
+
+    public void setSubmittable(boolean submittable) {
+        this.submittable = submittable;
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CurrentTaxon taxon = (CurrentTaxon) o;
-
-        if (taxId != null ? !taxId.equals(taxon.taxId) : taxon.taxId != null) return false;
-        if (scientificName != null ? !scientificName.equals(taxon.scientificName) : taxon.scientificName != null)
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
-        if (commonName != null ? !commonName.equals(taxon.commonName) : taxon.commonName != null) return false;
-        if (displayName != null ? !displayName.equals(taxon.displayName) : taxon.displayName != null) return false;
+        }
+
+        CurrentTaxon that = (CurrentTaxon) o;
+
+        if (submittable != that.submittable) {
+            return false;
+        }
+        if (taxId != null ? !taxId.equals(that.taxId) : that.taxId != null) {
+            return false;
+        }
+        if (scientificName != null ? !scientificName.equals(that.scientificName) : that.scientificName != null) {
+            return false;
+        }
+        if (commonName != null ? !commonName.equals(that.commonName) : that.commonName != null) {
+            return false;
+        }
+        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) {
+            return false;
+        }
 
         return true;
     }
@@ -66,6 +90,7 @@ public class CurrentTaxon implements Taxon {
         result = 31 * result + (scientificName != null ? scientificName.hashCode() : 0);
         result = 31 * result + (commonName != null ? commonName.hashCode() : 0);
         result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (submittable ? 1 : 0);
         return result;
     }
 
@@ -76,6 +101,7 @@ public class CurrentTaxon implements Taxon {
                 ", scientificName='" + scientificName + '\'' +
                 ", commonName='" + commonName + '\'' +
                 ", displayName='" + displayName + '\'' +
+                ", submittable=" + submittable +
                 '}';
     }
 }

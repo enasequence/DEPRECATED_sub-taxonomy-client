@@ -71,6 +71,11 @@ public class LegacyTaxon implements Taxon {
     return name;
   }
 
+  @Override
+  public boolean isSubmittable() {
+    return true;
+  }
+
   public String getRank() {
     return rank;
   }

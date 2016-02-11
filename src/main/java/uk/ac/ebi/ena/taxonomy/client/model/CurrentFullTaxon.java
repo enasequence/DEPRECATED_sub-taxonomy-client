@@ -9,19 +9,7 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
     private String geneticCode;
     private String mitochondrialGeneticCode;
     private String plastIdGeneticCode;
-
-    @Override
-    public String toString() {
-        return "CurrentFullTaxon{" +
-                "formalName='" + formalName + '\'' +
-                ", rank='" + rank + '\'' +
-                ", division='" + division + '\'' +
-                ", lineage='" + lineage + '\'' +
-                ", geneticCode='" + geneticCode + '\'' +
-                ", mitochondrialGeneticCode='" + mitochondrialGeneticCode + '\'' +
-                ", plastIdGeneticCode='" + plastIdGeneticCode + '\'' +
-                "} " + super.toString();
-    }
+    private boolean submittable;
 
     public String getFormalName() {
         return formalName;
@@ -79,25 +67,68 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
         this.plastIdGeneticCode = plastIdGeneticCode;
     }
 
+    public boolean isSubmittable() {
+        return submittable;
+    }
+
+    public void setSubmittable(boolean submittable) {
+        this.submittable = submittable;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         CurrentFullTaxon that = (CurrentFullTaxon) o;
 
-        if (formalName != null ? !formalName.equals(that.formalName) : that.formalName != null) return false;
-        if (rank != null ? !rank.equals(that.rank) : that.rank != null) return false;
-        if (division != null ? !division.equals(that.division) : that.division != null) return false;
-        if (lineage != null ? !lineage.equals(that.lineage) : that.lineage != null) return false;
-        if (geneticCode != null ? !geneticCode.equals(that.geneticCode) : that.geneticCode != null) return false;
-        if (mitochondrialGeneticCode != null ? !mitochondrialGeneticCode.equals(that.mitochondrialGeneticCode) : that.mitochondrialGeneticCode != null)
+        if (submittable != that.submittable) {
             return false;
-        if (plastIdGeneticCode != null ? !plastIdGeneticCode.equals(that.plastIdGeneticCode) : that.plastIdGeneticCode != null)
+        }
+        if (formalName != null ? !formalName.equals(that.formalName) : that.formalName != null) {
             return false;
+        }
+        if (rank != null ? !rank.equals(that.rank) : that.rank != null) {
+            return false;
+        }
+        if (division != null ? !division.equals(that.division) : that.division != null) {
+            return false;
+        }
+        if (lineage != null ? !lineage.equals(that.lineage) : that.lineage != null) {
+            return false;
+        }
+        if (geneticCode != null ? !geneticCode.equals(that.geneticCode) : that.geneticCode != null) {
+            return false;
+        }
+        if (mitochondrialGeneticCode != null ? !mitochondrialGeneticCode.equals(that.mitochondrialGeneticCode) : that.mitochondrialGeneticCode != null) {
+            return false;
+        }
+        if (plastIdGeneticCode != null ? !plastIdGeneticCode.equals(that.plastIdGeneticCode) : that.plastIdGeneticCode != null) {
+            return false;
+        }
 
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "CurrentFullTaxon{" +
+                "formalName='" + formalName + '\'' +
+                ", rank='" + rank + '\'' +
+                ", division='" + division + '\'' +
+                ", lineage='" + lineage + '\'' +
+                ", geneticCode='" + geneticCode + '\'' +
+                ", mitochondrialGeneticCode='" + mitochondrialGeneticCode + '\'' +
+                ", plastIdGeneticCode='" + plastIdGeneticCode + '\'' +
+                ", submittable=" + submittable +
+                "} " + super.toString();
     }
 
     @Override
@@ -110,7 +141,7 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
         result = 31 * result + (geneticCode != null ? geneticCode.hashCode() : 0);
         result = 31 * result + (mitochondrialGeneticCode != null ? mitochondrialGeneticCode.hashCode() : 0);
         result = 31 * result + (plastIdGeneticCode != null ? plastIdGeneticCode.hashCode() : 0);
+        result = 31 * result + (submittable ? 1 : 0);
         return result;
     }
-
 }
