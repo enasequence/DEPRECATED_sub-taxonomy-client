@@ -1,5 +1,8 @@
 package uk.ac.ebi.ena.taxonomy.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
 
     private String formalName;
