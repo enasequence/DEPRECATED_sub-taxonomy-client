@@ -2,7 +2,6 @@ package uk.ac.ebi.ena.taxonomy.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
 
     private String formalName;
@@ -12,7 +11,6 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
     private String geneticCode;
     private String mitochondrialGeneticCode;
     private String plastIdGeneticCode;
-    private boolean submittable;
 
     public String getFormalName() {
         return formalName;
@@ -70,14 +68,6 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
         this.plastIdGeneticCode = plastIdGeneticCode;
     }
 
-    public boolean isSubmittable() {
-        return submittable;
-    }
-
-    public void setSubmittable(boolean submittable) {
-        this.submittable = submittable;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -92,9 +82,6 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
 
         CurrentFullTaxon that = (CurrentFullTaxon) o;
 
-        if (submittable != that.submittable) {
-            return false;
-        }
         if (formalName != null ? !formalName.equals(that.formalName) : that.formalName != null) {
             return false;
         }
@@ -121,20 +108,6 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
     }
 
     @Override
-    public String toString() {
-        return "CurrentFullTaxon{" +
-                "formalName='" + formalName + '\'' +
-                ", rank='" + rank + '\'' +
-                ", division='" + division + '\'' +
-                ", lineage='" + lineage + '\'' +
-                ", geneticCode='" + geneticCode + '\'' +
-                ", mitochondrialGeneticCode='" + mitochondrialGeneticCode + '\'' +
-                ", plastIdGeneticCode='" + plastIdGeneticCode + '\'' +
-                ", submittable=" + submittable +
-                "} " + super.toString();
-    }
-
-    @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (formalName != null ? formalName.hashCode() : 0);
@@ -144,7 +117,20 @@ public class CurrentFullTaxon extends CurrentTaxon implements Taxon {
         result = 31 * result + (geneticCode != null ? geneticCode.hashCode() : 0);
         result = 31 * result + (mitochondrialGeneticCode != null ? mitochondrialGeneticCode.hashCode() : 0);
         result = 31 * result + (plastIdGeneticCode != null ? plastIdGeneticCode.hashCode() : 0);
-        result = 31 * result + (submittable ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "CurrentFullTaxon{" +
+                "formalName='" + formalName + '\'' +
+                ", rank='" + rank + '\'' +
+                ", division='" + division + '\'' +
+                ", lineage='" + lineage + '\'' +
+                ", geneticCode='" + geneticCode + '\'' +
+                ", mitochondrialGeneticCode='" + mitochondrialGeneticCode + '\'' +
+                ", plastIdGeneticCode='" + plastIdGeneticCode + '\'' +
+                "} " + super.toString();
+    }
+
 }
