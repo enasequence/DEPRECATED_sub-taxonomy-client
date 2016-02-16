@@ -95,6 +95,6 @@ public class TaxonomyClientCurrentImpl implements TaxonomyClient {
 
     @Override
     public boolean isTaxIdValid(long taxId) throws TaxonomyException {
-        return !getTaxonById(taxId).getTaxId().equals(0L);
+        return getTaxonById(taxId).isSubmittable();
     }
 }

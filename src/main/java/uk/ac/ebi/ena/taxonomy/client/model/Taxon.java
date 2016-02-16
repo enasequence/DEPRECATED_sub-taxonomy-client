@@ -10,4 +10,5 @@ public interface Taxon {
 
     String getName();
 
+    boolean isSubmittable();
 }

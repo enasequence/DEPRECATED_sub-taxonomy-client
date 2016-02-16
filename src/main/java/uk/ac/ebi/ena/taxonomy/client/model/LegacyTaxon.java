@@ -13,54 +13,54 @@ public class LegacyTaxon implements Taxon {
   private String commonName;
   private String rank;
 
+  public void setSubmittable(boolean submittable) {
+    this.submittable = submittable;
+  }
+
+  private boolean submittable = false;
+
   @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o) {
       return true;
     }
-    if (obj == null) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+
+    LegacyTaxon that = (LegacyTaxon) o;
+
+    if (submittable != that.submittable) {
       return false;
     }
-    final LegacyTaxon other = (LegacyTaxon) obj;
-    if (commonName == null) {
-      if (other.commonName != null) {
-        return false;
-      }
-    } else if (!commonName.equals(other.commonName)) {
+    if (taxId != null ? !taxId.equals(that.taxId) : that.taxId != null) {
       return false;
     }
-    if (name == null) {
-      if (other.name != null) {
-        return false;
-      }
-    } else if (!name.equals(other.name)) {
+    if (name != null ? !name.equals(that.name) : that.name != null) {
       return false;
     }
-    if (rank == null) {
-      if (other.rank != null) {
-        return false;
-      }
-    } else if (!rank.equals(other.rank)) {
+    if (scientificName != null ? !scientificName.equals(that.scientificName) : that.scientificName != null) {
       return false;
     }
-    if (scientificName == null) {
-      if (other.scientificName != null) {
-        return false;
-      }
-    } else if (!scientificName.equals(other.scientificName)) {
+    if (commonName != null ? !commonName.equals(that.commonName) : that.commonName != null) {
       return false;
     }
-    if (taxId == null) {
-      if (other.taxId != null) {
-        return false;
-      }
-    } else if (!taxId.equals(other.taxId)) {
+    if (rank != null ? !rank.equals(that.rank) : that.rank != null) {
       return false;
     }
+
     return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = taxId != null ? taxId.hashCode() : 0;
+    result = 31 * result + (name != null ? name.hashCode() : 0);
+    result = 31 * result + (scientificName != null ? scientificName.hashCode() : 0);
+    result = 31 * result + (commonName != null ? commonName.hashCode() : 0);
+    result = 31 * result + (rank != null ? rank.hashCode() : 0);
+    result = 31 * result + (submittable ? 1 : 0);
+    return result;
   }
 
   public String getCommonName() {
@@ -69,6 +69,11 @@ public class LegacyTaxon implements Taxon {
 
   public String getName() {
     return name;
+  }
+
+  @Override
+  public boolean isSubmittable() {
+    return submittable;
   }
 
   public String getRank() {
@@ -81,18 +86,6 @@ public class LegacyTaxon implements Taxon {
 
   public Long getTaxId() {
     return taxId;
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = (prime * result) + ((commonName == null) ? 0 : commonName.hashCode());
-    result = (prime * result) + ((name == null) ? 0 : name.hashCode());
-    result = (prime * result) + ((rank == null) ? 0 : rank.hashCode());
-    result = (prime * result) + ((scientificName == null) ? 0 : scientificName.hashCode());
-    result = (prime * result) + ((taxId == null) ? 0 : taxId.hashCode());
-    return result;
   }
 
   public void setCommonName(final String commonName) {
@@ -117,7 +110,13 @@ public class LegacyTaxon implements Taxon {
 
   @Override
   public String toString() {
-    return "LegacyTaxon [taxId=" + taxId + ", name=" + name + ", scientificName=" + scientificName + ", commonName="
-        + commonName + ", rank=" + rank + "]";
+    return "LegacyTaxon{" +
+            "taxId=" + taxId +
+            ", name='" + name + '\'' +
+            ", scientificName='" + scientificName + '\'' +
+            ", commonName='" + commonName + '\'' +
+            ", rank='" + rank + '\'' +
+            ", submittable=" + submittable +
+            '}';
   }
 }
