@@ -6,11 +6,9 @@ Java client for the ENA taxonomy service.
 
 Daniel Vaughan
 
-[![Build Status](http://ves-ebi-de:8080/buildStatus/icon?job=checklist-editor)](http://ves-ebi-de:8080/job/checklist-editor/)
-
 ## Build and Deployments
 
-[See Confluence page](http://www.ebi.ac.uk/seqdb/confluence/display/EMBL/ENA+Taxonomy+Client+-+Checkout%2C+Build%2C+Publish)
+gradle jar
 
 ## License
 
