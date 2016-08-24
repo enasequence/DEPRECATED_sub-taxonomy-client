@@ -5,27 +5,11 @@ version = version_num
 buildscript {
     repositories {
         mavenLocal()
-        maven { url "http://ves-ebi-de:8081/artifactory/gradle" }
         mavenCentral()
-    }
-    dependencies {
-        classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.1"
     }
 }
 
 apply plugin: "jacoco"
-apply plugin: "org.sonarqube"
-
-sonarqube {
-    properties {
-        property "sonar.host.url", "http://ves-ebi-de:9000"
-        property "sonar.jdbc.url", "jdbc:mysql://mysql-ena-sonar-prod:4487/sonar?useUnicode=true&characterEncoding=utf8"
-        property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
-        property "sonar.jdbc.username", "sonar"
-        property "sonar.jdbc.password", "sonar"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
 
 apply plugin: 'maven-publish'
 apply plugin: 'java'
