@@ -5,10 +5,7 @@ jdk:
 
 install: true
 
-script: ./gradlew check
-
-after_success:
-- ./gradlew test
+script: ./gradlew clean build
 
 
 
