@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven { url "http://ves-ebi-de:8081/artifactory/gradle" }
         mavenCentral()
     }
     dependencies {
@@ -29,8 +28,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 ext { springVersion = "4.0.5.RELEASE" }
 
