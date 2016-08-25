@@ -1,17 +1,24 @@
-def version_num = '2.1.2'
-
-version = version_num
-
 buildscript {
     repositories {
         mavenLocal()
+        maven { url "http://ves-ebi-de:8081/artifactory/gradle" }
         mavenCentral()
+    }
+    dependencies {
+        classpath("org.sonarqube.gradle:gradle-sonarqube-plugin:1.1")
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
     }
 }
 
-apply plugin: "jacoco"
+def version_num = '2.1.2'
 
-apply plugin: 'maven-publish'
+version = version_num
+ext.archivesBaseName = 'ena-taxonomy-client'
+
+apply plugin: 'io.codearte.nexus-staging'
+apply plugin: "jacoco"
+apply plugin: 'signing'
+apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -19,12 +26,11 @@ group = 'uk.ac.ebi.ena.taxonomy'
 
 repositories {
     mavenLocal()
-    maven { url "http://ves-ebi-de:8081/artifactory/gradle" }
     mavenCentral()
 }
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 ext { springVersion = "4.0.5.RELEASE" }
 
@@ -44,36 +50,83 @@ dependencies {
 
 jar {
     manifest {
-        attributes("Implementation-Title": "ENA Taxonomy Client (Gradle build)", "Implementation-Version": version)
+        attributes(
+                "Implementation-Title": archivesBaseName,
+                'Implementation-Version': version,
+                'Source-Compatibility': project.sourceCompatibility,
+                'Target-Compatibility': project.targetCompatibility
+        )
     }
 }
 
-task sourceJar(type: Jar) { from sourceSets.main.allJava }
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourceJar { classifier "sources" }
-        }
-    }
-    repositories {
-        maven {
-            credentials {
-                username 'admin'
-                password 'ena-artifactory'
-            }
-            url "http://ves-ebi-de:8081/artifactory/libs-release-local"
-        }
-    }
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
 }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+artifacts {
+    archives javadocJar
+    archives jar
+    archives sourceJar
+}
+
+signing {
+    sign configurations.archives
+}
+
 
 task wrapper(type: Wrapper) { gradleVersion = '2.9' }
 
-jar.manifest {
-    attributes('Implementation-Title': project.name,
-            'Implementation-Version': project.version,
-            'Source-Compatibility': project.sourceCompatibility,
-            'Target-Compatibility': project.targetCompatibility
-    )
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name archivesBaseName
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'ENA Taxonomy Service'
+                url 'ena taxonomy service'
+
+                scm {
+                    url 'https://github.com/enasequence/ena-taxonomy-client'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'neilg'
+                        name 'Daniel Vaughan'
+                        email 'dvaughan@ebi.ac.uk'
+                    }
+                }
+            }
+        }
+    }
 }
+
+nexusStaging {
+    packageGroup = "uk.ac.ebi.ena.taxonomy"
+}
+
+
