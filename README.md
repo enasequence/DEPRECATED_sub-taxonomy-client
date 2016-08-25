@@ -10,6 +10,8 @@ Daniel Vaughan
 
 gradle jar
 
+[![Build Status](https://travis-ci.org/enasequence/ena-taxonomy-client.svg?branch=master)](https://travis-ci.org/enasequence/ena-taxonomy-client)
+
 ## License
 
 Copyright 2015  EMBL - European Bioinformatics Institute
