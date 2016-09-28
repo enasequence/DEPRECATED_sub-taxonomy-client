@@ -15,7 +15,7 @@ buildscript {
 def version_num = '2.1.2'
 
 version = version_num
-ext.archivesBaseName = 'ena-taxonomy-client'
+ext.archivesBaseName = 'sub-taxonomy-client'
 
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: "jacoco"
