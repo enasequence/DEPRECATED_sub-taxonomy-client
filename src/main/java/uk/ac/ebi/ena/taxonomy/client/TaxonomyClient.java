@@ -43,20 +43,15 @@ public interface TaxonomyClient
 
 	List<Taxon> suggestTaxa(String partialName) throws TaxonomyException;
 
-	List<Taxon> suggestTaxa(String partialName, boolean metagenome)
-			throws TaxonomyException;
+	List<Taxon> suggestTaxa(String partialName, boolean metagenome) throws TaxonomyException;
 
-	List<Taxon> suggestTaxa(String partialName, boolean metagenome, int limit)
-			throws TaxonomyException;
+	List<Taxon> suggestTaxa(String partialName, boolean metagenome, int limit) throws TaxonomyException;
 
-	List<Taxon> suggestTaxa(String partialName, int limit)
-			throws TaxonomyException;
+	List<Taxon> suggestTaxa(String partialName, int limit) throws TaxonomyException;
 
-	List<Taxon> getTaxonByScientificName(String scientificName)
-			throws TaxonomyException;
-
-	List<Taxon> getTaxonByCommonName(String commonName)
-			throws TaxonomyException;
+	List<Taxon> getTaxonByScientificName(String scientificName) throws TaxonomyException;
+ 
+	List<Taxon> getTaxonByCommonName(String commonName) throws TaxonomyException;
 
 	List<Taxon> getTaxonByAnyName(String commonName) throws TaxonomyException;
 
@@ -64,12 +59,10 @@ public interface TaxonomyClient
 
 	Taxon getSubmittableTaxonByTaxId(Long taxId) throws TaxonomyException;
 
-	Taxon getSubmittableTaxonByScientificName(String scientificName)
-			throws TaxonomyException;
+	Taxon getSubmittableTaxonByScientificName(String scientificName) throws TaxonomyException;
 
 	Taxon getSubmittableTaxonByAnyName(String anyName) throws TaxonomyException;
 
-	Taxon getSubmittableTaxonByCommonName(String commonName)
-			throws TaxonomyException;
+	Taxon getSubmittableTaxonByCommonName(String commonName) throws TaxonomyException;
 
 }
