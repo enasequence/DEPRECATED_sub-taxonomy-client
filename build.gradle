@@ -12,7 +12,7 @@
     }
 }*/
 
-def version_num = '2.1.2'
+def version_num = '1.1.0'
 
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
@@ -34,9 +34,9 @@ targetCompatibility = 1.8
 
 dependencies {
 
-    testCompile "junit:junit:4.11"
-      compile 'commons-collections:commons-collections:3.2.1'
-    compile 'org.apache.commons:commons-lang3:3.0'
+  testCompile "junit:junit:4.11"
+  compile 'commons-collections:commons-collections:3.2.1'
+  compile 'org.apache.commons:commons-lang3:3.0'
   compile 'commons-dbutils:commons-dbutils:1.5'
   compile 'commons-lang:commons-lang:2.6'
   compile 'com.beust:jcommander:1.7'
@@ -77,51 +77,101 @@ signing {
 
 task wrapper(type: Wrapper) { gradleVersion = '2.9' }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+uploadArchives 
+  {
+    repositories 
+     {
+    /*  mavenDeployer 
+          {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) 
+          }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+       if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) 
+       {
+        
+          repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") 
+          {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
+          }
 
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
+          snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") 
+          {
+               authentication(userName: ossrhUsername, password: ossrhPassword)
+          }
+       }
+        pom.project 
+          {
+               name 'sequencetools'
+               packaging 'jar'
+               description 'flat file parser and validator'
+               url 'http://www.ebi.ac.uk/ena'
 
-            pom.project {
-                name archivesBaseName
-                packaging 'jar'
-                // optionally artifactId can be defined here
-                description 'ENA Taxonomy Service'
-                url 'ena taxonomy service'
-
-                scm {
-                    url 'https://github.com/enasequence/ena-taxonomy-client'
+                scm 
+                {
+                    url 'https://github.com/enasequence/sequencetools'
                 }
 
-                licenses {
-                    license {
+                licenses 
+                {
+                    license 
+                    {
                         name 'The Apache License, Version 2.0'
                         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
 
-                developers {
-                    developer {
-                       id 'neilg'
+                developers 
+                {
+                    developer 
+                    {
+                        id 'kethi'
+                        name 'kethi reddy'
+                        email 'reddyk@ebi.ac.uk'
+                    }
+                }
+            }
+        }*/
+//local repository	
+		 mavenDeployer 
+		 {
+		   repository(url: "http://ena-dev:8081/artifactory/libs-release-local"){
+                authentication(userName: artifactoryUsername, password: artifactoryPassword)
+            }
+			pom.project 
+          {
+               name 'sequencetools'
+               packaging 'jar'
+               description 'flat file parser and validator'
+               url 'http://www.ebi.ac.uk/ena'
+
+                scm 
+                {
+                    url 'https://github.com/enasequence/sequencetools'
+                }
+
+                licenses 
+                {
+                    license 
+                    {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers 
+                {
+                    developer 
+                    {
+                        id 'neilg'
                         name 'Daniel Vaughan'
                         email 'dvaughan@ebi.ac.uk'
                     }
                 }
             }
-        }
-    }
-}
+		 }
+		 }
+		 }
+		 
 
-/*nexusStaging {
-    packageGroup = "uk.ac.ebi.ena.taxonomy"
-}*/
 
 
