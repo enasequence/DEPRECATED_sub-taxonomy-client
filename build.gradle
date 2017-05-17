@@ -1,4 +1,4 @@
-buildscript {
+/*buildscript {
     repositories {
         mavenLocal()
         maven {
@@ -10,15 +10,13 @@ buildscript {
         classpath("org.sonarqube.gradle:gradle-sonarqube-plugin:1.1")
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
     }
-}
+}*/
 
 def version_num = '2.1.2'
 
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
 
-apply plugin: 'io.codearte.nexus-staging'
-apply plugin: "jacoco"
 apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'java'
@@ -31,23 +29,18 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
-ext { springVersion = "4.0.5.RELEASE" }
-
-test {
-    filter { includeTestsMatching "*Should" }
-}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-    compile "org.springframework:spring-web:${springVersion}"
-    compile "com.fasterxml.jackson.core:jackson-core:2.3.3"
-    compile "com.fasterxml.jackson.core:jackson-databind:2.3.3"
+
     testCompile "junit:junit:4.11"
-    testCompile "com.google.code.bean-matchers:bean-matchers:0.9"
-    testCompile "org.springframework:spring-test:${springVersion}"
-    testCompile "com.github.tomakehurst:wiremock:1.42"
+      compile 'commons-collections:commons-collections:3.2.1'
+    compile 'org.apache.commons:commons-lang3:3.0'
+  compile 'commons-dbutils:commons-dbutils:1.5'
+  compile 'commons-lang:commons-lang:2.6'
+  compile 'com.beust:jcommander:1.7'
+  compile 'org.json:json:20131018'
 }
 
 jar {
@@ -117,7 +110,7 @@ uploadArchives {
 
                 developers {
                     developer {
-                        id 'neilg'
+                       id 'neilg'
                         name 'Daniel Vaughan'
                         email 'dvaughan@ebi.ac.uk'
                     }
@@ -127,8 +120,8 @@ uploadArchives {
     }
 }
 
-nexusStaging {
+/*nexusStaging {
     packageGroup = "uk.ac.ebi.ena.taxonomy"
-}
+}*/
 
 
