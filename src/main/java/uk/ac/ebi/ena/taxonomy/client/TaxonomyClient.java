@@ -28,11 +28,12 @@ enum TaxonomyUrl
 		return String.format(url, searchName, searchId);
 	}
 
-	public boolean isValid(String searchId) throws IOException
+	public boolean isNotValid(String searchId) throws IOException
 	{
 		URL url = new URL(get(searchId).replaceAll(" ", "%20"));
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.connect();
+		System.out.println(con.getResponseCode());
 		return con.getResponseCode() >= 400;
 	}
 
@@ -40,7 +41,6 @@ enum TaxonomyUrl
 
 public interface TaxonomyClient
 {
-
 	List<Taxon> suggestTaxa(String partialName) throws TaxonomyException;
 
 	List<Taxon> suggestTaxa(String partialName, boolean metagenome) throws TaxonomyException;
@@ -53,7 +53,7 @@ public interface TaxonomyClient
  
 	List<Taxon> getTaxonByCommonName(String commonName) throws TaxonomyException;
 
-	List<Taxon> getTaxonByAnyName(String commonName) throws TaxonomyException;
+	List<Taxon> getTaxonByAnyName(String anyName) throws TaxonomyException;
 
 	Taxon getTaxonByTaxid(Long taxId) throws TaxonomyException;
 
@@ -64,5 +64,7 @@ public interface TaxonomyClient
 	Taxon getSubmittableTaxonByAnyName(String anyName) throws TaxonomyException;
 
 	Taxon getSubmittableTaxonByCommonName(String commonName) throws TaxonomyException;
+	
+	boolean isMetagenomic(Taxon taxon) throws TaxonomyException;
 
 }

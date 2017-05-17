@@ -23,7 +23,7 @@ public class JsonUtils
 		return true;
 	}
 	 
-	public boolean isJSONObjectValid(String taxonString)
+	public static boolean isJSONObjectValid(String taxonString)
 	{
 		try
 		{
@@ -48,6 +48,12 @@ public class JsonUtils
 			if (str != null && JsonUtils.isJSONArrayValid(str.toString()))
 			{
 				return new JSONArray(str.toString());
+			}
+			if (str != null && JsonUtils.isJSONObjectValid(str.toString()))
+			{
+				JSONArray jsonarrayObj= new JSONArray();
+				jsonarrayObj.put(new JSONObject(str.toString()));
+				return jsonarrayObj;
 			}
 			return null;
 		}

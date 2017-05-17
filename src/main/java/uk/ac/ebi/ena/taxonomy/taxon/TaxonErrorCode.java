@@ -4,12 +4,11 @@ import java.text.MessageFormat;
 
 public enum TaxonErrorCode
 {
-	InvalidUrl("Invalid Taxon Search Url: %s"),
-	SearchFailure("Failed to search taxon by %s : %s"),
-	UnknownOrganism("Uknown Organism: %s"),
-	AmbiguousOrganism("Ambiguous Organism: %s"),
-	NotSubmittableOrganism("Not Submittable Organism: %s"),
-	NullableSearchId("%s is null to search taxon by %s");
+	SearchFailure("Failed to search taxon by {0} : {1} ({2})"),
+	UnknownTaxon("Uknown {0}: {1}"),
+	AmbiguousTaxon("Ambiguous {0}: {1}"),
+	NotSubmittableTaxon("Not Submittable {0}: {1}"),
+	NullableSearchId("{0} is null or empty to search taxon by {1}");
 	
 	String message;
 	private TaxonErrorCode(String message)

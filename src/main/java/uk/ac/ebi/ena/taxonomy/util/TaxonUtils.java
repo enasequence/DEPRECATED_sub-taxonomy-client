@@ -16,21 +16,21 @@ import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
 public class TaxonUtils
 {
     
-	public static Taxon getSubmittableTaxon(List<Taxon> taxons, String name) 
+	public static Taxon getSubmittableTaxon(List<Taxon> taxons, String searchId,String searchName) 
 	{
 		List<Taxon> submittableTaxons = new ArrayList<Taxon>();
 
 		if (taxons == null || taxons.size() == 0)
-			throw new TaxonomyException(TaxonErrorCode.UnknownOrganism.get(name));
+			throw new TaxonomyException(TaxonErrorCode.UnknownTaxon.get(searchName,searchId));
 		for (Taxon taxon : taxons)
 		{
 			if (taxon.isSubmittable())
 				submittableTaxons.add(taxon);
 		}
 		if (submittableTaxons.size() < 1)
-			throw new TaxonomyException(TaxonErrorCode.NotSubmittableOrganism.get(name));
+			throw new TaxonomyException(TaxonErrorCode.NotSubmittableTaxon.get(searchName,searchId));
 		if (submittableTaxons.size() > 1)
-			throw new TaxonomyException(TaxonErrorCode.AmbiguousOrganism.get(name));
+			throw new TaxonomyException(TaxonErrorCode.AmbiguousTaxon.get(searchName,searchId));
 		if (submittableTaxons.size() == 1)
 			return submittableTaxons.get(0);
 

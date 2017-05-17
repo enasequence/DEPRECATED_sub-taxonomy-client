@@ -1,11 +1,14 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonErrorCode;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
@@ -43,15 +46,18 @@ public class TaxonomyClientImpl implements TaxonomyClient
 		String searchId = partialName + "?limit=" + limit;
 		try
 		{
-			if (!TaxonomyUrl.suggestForSubmission.isValid(searchId))
-			{
-				throw new TaxonomyException(TaxonErrorCode.InvalidUrl.get(TaxonomyUrl.suggestForSubmission.get(searchId)));
-			}
+			if (partialName == null||partialName.isEmpty())
+				throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.suggestForSubmission.name(),TaxonomyUrl.suggestForSubmission.name()));
+			
 			URL url = new URL(TaxonomyUrl.suggestForSubmission.get(searchId).replaceAll(" ", "%20"));
+			if(!metagenome)
 			return TaxonUtils.getTaxon(url);
+			
+			return TaxonUtils.getTaxon(url).stream().filter(taxon->isMetagenomic(taxon)).collect(Collectors.toList());
+		
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(partialName,TaxonomyUrl.suggestForSubmission.get(searchId))+ "\n" + e.getMessage());
+			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(TaxonomyUrl.suggestForSubmission.name(),partialName,TaxonomyUrl.suggestForSubmission.get(searchId)));
 		}
 	}
 
@@ -59,15 +65,11 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	public Taxon getTaxonByTaxid(Long taxId) throws TaxonomyException
 	{
 		if (taxId == null)
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get("taxid", "taxid"));
+			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.taxid.name(), TaxonomyUrl.taxid.name()));
 		try
 		{
 			if (taxonIdCache.get(taxId) == null)
 			{
-				if (!TaxonomyUrl.taxid.isValid(taxId.toString()))
-				{
-					throw new TaxonomyException(TaxonErrorCode.InvalidUrl.get(TaxonomyUrl.taxid.get(taxId.toString())));
-				}
 				URL url = new URL(TaxonomyUrl.taxid.get(taxId.toString()).replaceAll(" ", "%20"));
 				List<Taxon> taxon = TaxonUtils.getTaxon(url);
 				taxonIdCache.put(taxId, taxon.size() > 0 ? taxon.get(0) : null);
@@ -75,7 +77,7 @@ public class TaxonomyClientImpl implements TaxonomyClient
 
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(taxId,	TaxonomyUrl.taxid.get(taxId.toString()))+ "\n"+ e.getMessage());
+			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(TaxonomyUrl.taxid.name(),taxId,TaxonomyUrl.taxid.get(taxId.toString())));
 		}
 		return taxonIdCache.get(taxId);
 	}
@@ -83,24 +85,19 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	@Override
 	public List<Taxon> getTaxonByScientificName(String scientificName)throws TaxonomyException
 	{
-		if (scientificName == null)
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get("scientificName", "scientificName"));
+		if (scientificName == null||scientificName.isEmpty())
+			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.scientificName.name(),TaxonomyUrl.scientificName.name()));
 		try
 		{
 			if (taxonScientificNameCache.get(scientificName) == null)
 			{
-				if (!TaxonomyUrl.scientificName.isValid(scientificName))
-				{
-					throw new TaxonomyException(TaxonErrorCode.InvalidUrl.get(TaxonomyUrl.scientificName.get(scientificName)));
-				}
-
 				URL url = new URL(TaxonomyUrl.scientificName.get(scientificName).replaceAll(" ", "%20"));
 				taxonScientificNameCache.put(scientificName, TaxonUtils.getTaxon(url));
 			}
 
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(scientificName,TaxonomyUrl.scientificName.get(scientificName))+ "\n" + e.getMessage());
+			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(TaxonomyUrl.scientificName.name(),scientificName,TaxonomyUrl.scientificName.get(scientificName)));
 		}
 		return taxonScientificNameCache.get(scientificName);
 	}
@@ -108,22 +105,18 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	@Override
 	public List<Taxon> getTaxonByCommonName(String commonName)throws TaxonomyException
 	{
-		if (commonName == null)
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get("commonName", "commonName"));
+		if (commonName == null||commonName.isEmpty())
+			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.commonName.name(), TaxonomyUrl.commonName.name()));
 		try
 		{
 			if (taxonCommonNameCache.get(commonName) == null)
 			{
-				if (!TaxonomyUrl.commonName.isValid(commonName))
-				{
-					throw new TaxonomyException(TaxonErrorCode.InvalidUrl.get(TaxonomyUrl.commonName.get(commonName)));
-				}
 				URL url = new URL(TaxonomyUrl.commonName.get(commonName).replaceAll(" ", "%20"));
 				taxonCommonNameCache.put(commonName, TaxonUtils.getTaxon(url));
 			}
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(commonName, TaxonomyUrl.commonName.get(commonName))+ "\n"+ e.getMessage());
+			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(TaxonomyUrl.commonName.name(),commonName, TaxonomyUrl.commonName.get(commonName)));
 		}
 		return taxonCommonNameCache.get(commonName);
 	}
@@ -131,23 +124,19 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	@Override
 	public List<Taxon> getTaxonByAnyName(String anyName)throws TaxonomyException
 	{
-		if (anyName == null)
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get("anyName", "anyName"));
+		if (anyName == null||anyName.isEmpty())
+			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.anyName.name(), TaxonomyUrl.anyName.name()));
 		try
 		{
 			if (taxonAnyNameCache.get(anyName) == null)
 			{
-				if (!TaxonomyUrl.anyName.isValid(anyName))
-				{
-					throw new TaxonomyException(TaxonErrorCode.InvalidUrl.get(TaxonomyUrl.anyName.get(anyName)));
-				}
 				URL url = new URL(TaxonomyUrl.anyName.get(anyName).replaceAll(" ", "%20"));
 				taxonAnyNameCache.put(anyName, TaxonUtils.getTaxon(url));
 			}
 
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(anyName, TaxonomyUrl.commonName.get(anyName))+ "\n"+ e.getMessage());
+			throw new TaxonomyException(TaxonErrorCode.SearchFailure.get(TaxonomyUrl.anyName.name(),anyName, TaxonomyUrl.commonName.get(anyName)));
 		}
 		return taxonAnyNameCache.get(anyName);
 	}
@@ -155,29 +144,43 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	@Override
 	public Taxon getSubmittableTaxonByScientificName(String scientificName)	throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByScientificName(scientificName),scientificName);
+		return TaxonUtils.getSubmittableTaxon(getTaxonByScientificName(scientificName),scientificName,TaxonomyUrl.scientificName.name());
 
 	}
 
 	@Override
 	public Taxon getSubmittableTaxonByAnyName(String anyName)throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByAnyName(anyName), anyName);
+		return TaxonUtils.getSubmittableTaxon(getTaxonByAnyName(anyName), anyName,TaxonomyUrl.anyName.name());
 
 	}
 
 	@Override
 	public Taxon getSubmittableTaxonByCommonName(String commonName)	throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByCommonName(commonName), commonName);
+		return TaxonUtils.getSubmittableTaxon(getTaxonByCommonName(commonName), commonName,TaxonomyUrl.commonName.name());
 
 	}
 
 	@Override
 	public Taxon getSubmittableTaxonByTaxId(Long taxId)	throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByTaxid(taxId) == null ? null: Arrays.asList(getTaxonByTaxid(taxId)), taxId.toString());
+		return TaxonUtils.getSubmittableTaxon(getTaxonByTaxid(taxId) == null ? null: Arrays.asList(getTaxonByTaxid(taxId)), taxId.toString(),TaxonomyUrl.taxid.name());
 	}
+
+	@Override
+	public boolean isMetagenomic(Taxon taxon) throws TaxonomyException
+	{
+		if (taxon == null || taxon.getTaxId() == null)
+			return false;
+		if (taxon.getLineage() == null)
+		{
+			return getTaxonByTaxid(taxon.getTaxId()).isMetagenome();
+		}
+		return taxon.isMetagenome();
+
+	}
+	
 
 	
 }
