@@ -1,7 +1,6 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
