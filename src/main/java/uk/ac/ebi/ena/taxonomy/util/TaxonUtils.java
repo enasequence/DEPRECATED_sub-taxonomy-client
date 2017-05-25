@@ -42,6 +42,11 @@ public class TaxonUtils
 		List<Taxon> taxons = new ArrayList<Taxon>();
 		TaxonFactory taxonFactory =new TaxonFactory();
 		JsonUtils jsonUtils = new JsonUtils();
+		if(!JsonUtils.checkServerError(url)&&JsonUtils.checkClientError(url))
+		{
+			return taxons;
+		}
+			
 		JSONArray jsonTaxonObject = jsonUtils.getJsonArray(url);
 		if (jsonTaxonObject == null)
 		{
@@ -49,7 +54,7 @@ public class TaxonUtils
 		}
 		for (int i = 0; i < jsonTaxonObject.length(); i++)
 			taxons.add(taxonFactory.createTaxon(jsonTaxonObject.getJSONObject(i)));
-
+		
 		return taxons;
 	}
 }

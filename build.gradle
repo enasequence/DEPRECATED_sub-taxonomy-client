@@ -12,7 +12,7 @@
     }
 }*/
 
-def version_num = '1.1.0'
+def version_num = '2.2.2'
 
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
@@ -101,14 +101,14 @@ uploadArchives
        }
         pom.project 
           {
-               name 'sequencetools'
+               name 'sub-taxonomy-client'
                packaging 'jar'
-               description 'flat file parser and validator'
+               description 'Taxonomy Client'
                url 'http://www.ebi.ac.uk/ena'
 
                 scm 
                 {
-                    url 'https://github.com/enasequence/sequencetools'
+                    url 'https://github.com/enasequence/sub-taxonomy-client'
                 }
 
                 licenses 
@@ -139,14 +139,14 @@ uploadArchives
             }
 			pom.project 
           {
-               name 'sequencetools'
+               name 'sub-taxonomy-client'
                packaging 'jar'
-               description 'flat file parser and validator'
+               description 'Taxonomy Client'
                url 'http://www.ebi.ac.uk/ena'
 
                 scm 
                 {
-                    url 'https://github.com/enasequence/sequencetools'
+                    url 'https://github.com/enasequence/sub-taxonomy-client'
                 }
 
                 licenses 

@@ -2,10 +2,7 @@ package uk.ac.ebi.ena.taxonomy.client;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
@@ -13,12 +10,8 @@ import uk.ac.ebi.ena.taxonomy.taxon.TaxonErrorCode;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
 import uk.ac.ebi.ena.taxonomy.util.TaxonUtils;
 
-public class TaxonomyClientImpl implements TaxonomyClient
+public class TaxonomyClientNoCacheImpl implements TaxonomyClient
 {
-	static Map<String, List<Taxon>> taxonScientificNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
-	static Map<Long, Taxon> taxonIdCache = Collections.synchronizedMap(new HashMap<Long, Taxon>());
-	static Map<String, List<Taxon>> taxonCommonNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
-	static Map<String, List<Taxon>> taxonAnyNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
 	private static final int DEFAULT_LIMIT = 10;
 
 	@Override
@@ -64,18 +57,14 @@ public class TaxonomyClientImpl implements TaxonomyClient
 			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.taxid.name(), TaxonomyUrl.taxid.name()));
 		try
 		{
-			if (taxonIdCache.get(taxId) == null)
-			{
 				URL url = new URL(TaxonomyUrl.taxid.get(taxId.toString()).replaceAll(" ", "%20"));
 				List<Taxon> taxon = TaxonUtils.getTaxon(url);
-				taxonIdCache.put(taxId, taxon.size() > 0 ? taxon.get(0) : null);
-			}
-
+				return taxon.size() > 0 ? taxon.get(0) : null;
 		} catch (Exception e)
 		{
 			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.taxid.get(taxId.toString()).replaceAll(" ", "%20")+")");
 		}
-		return taxonIdCache.get(taxId);
+		
 	}
 
 	@Override
@@ -85,17 +74,12 @@ public class TaxonomyClientImpl implements TaxonomyClient
 			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.scientificName.name(),TaxonomyUrl.scientificName.name()));
 		try
 		{
-			if (taxonScientificNameCache.get(scientificName) == null)
-			{
 				URL url = new URL(TaxonomyUrl.scientificName.get(scientificName).replaceAll(" ", "%20"));
-				taxonScientificNameCache.put(scientificName, TaxonUtils.getTaxon(url));
-			}
-
+				return TaxonUtils.getTaxon(url);
 		} catch (Exception e)
 		{
 			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.scientificName.get(scientificName).replaceAll(" ", "%20")+")");
 		}
-		return taxonScientificNameCache.get(scientificName);
 	}
 
 	@Override
@@ -105,16 +89,13 @@ public class TaxonomyClientImpl implements TaxonomyClient
 			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.commonName.name(), TaxonomyUrl.commonName.name()));
 		try
 		{
-			if (taxonCommonNameCache.get(commonName) == null)
-			{
 				URL url = new URL(TaxonomyUrl.commonName.get(commonName).replaceAll(" ", "%20"));
-				taxonCommonNameCache.put(commonName, TaxonUtils.getTaxon(url));
-			}
+				return TaxonUtils.getTaxon(url);
+			
 		} catch (Exception e)
 		{
 			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.commonName.get(commonName).replaceAll(" ", "%20")+")");
 		}
-		return taxonCommonNameCache.get(commonName);
 	}
 
 	@Override
@@ -124,17 +105,12 @@ public class TaxonomyClientImpl implements TaxonomyClient
 			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.anyName.name(), TaxonomyUrl.anyName.name()));
 		try
 		{
-			if (taxonAnyNameCache.get(anyName) == null)
-			{
 				URL url = new URL(TaxonomyUrl.anyName.get(anyName).replaceAll(" ", "%20"));
-				taxonAnyNameCache.put(anyName, TaxonUtils.getTaxon(url));
-			}
-
+				return TaxonUtils.getTaxon(url);
 		} catch (Exception e)
 		{
 			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.anyName.get(anyName).replaceAll(" ", "%20")+")");
 		}
-		return taxonAnyNameCache.get(anyName);
 	}
 
 	@Override
@@ -207,5 +183,4 @@ public class TaxonomyClientImpl implements TaxonomyClient
 			return false;
 		}
 	}
-
 }

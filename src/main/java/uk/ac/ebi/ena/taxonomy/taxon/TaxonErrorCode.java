@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 
 public enum TaxonErrorCode
 {
-	SearchFailure("Failed to search taxon by {0} : {1} ({2})"),
 	UnknownTaxon("Uknown {0}: {1}"),
 	AmbiguousTaxon("Ambiguous {0}: {1}"),
 	NotSubmittableTaxon("Not Submittable {0}: {1}"),

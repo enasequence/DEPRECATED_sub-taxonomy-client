@@ -1,12 +1,17 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
 import static org.junit.Assert.*;
 import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
+import uk.ac.ebi.ena.taxonomy.util.JsonUtils;
 
 public class TaxonomyClientTest
 {
@@ -64,15 +69,8 @@ public class TaxonomyClientTest
 		{
 			assertEquals(e.getMessage(),"scientificName is null or empty to search taxon by scientificName");
 		}
-		try
-		{
 			taxonomyClient.getTaxonByScientificName("Aotu");
-		} catch (TaxonomyException e)
-		{
-			assertEquals(e.getMessage(),
-					     "Failed to search taxon by scientificName : Aotu (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/scientific-name/Aotu)");
-		}
-
+		
 	}
 
 	@Test
@@ -85,14 +83,8 @@ public class TaxonomyClientTest
 		{
 			assertEquals(e.getMessage(),"taxid is null or empty to search taxon by taxid");
 		}
-		try
-		{
-			taxonomyClient.getTaxonByTaxid(111l);
-		} catch (TaxonomyException e)
-		{
-			assertEquals(e.getMessage(),
-					     "Failed to search taxon by taxid : 111 (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/tax-id/111)");
-		}
+		 taxonomyClient.getTaxonByTaxid(111l);
+		
 
 	}
 
@@ -106,15 +98,9 @@ public class TaxonomyClientTest
 		{
 			assertEquals(e.getMessage(),"anyName is null or empty to search taxon by anyName");
 		}
-		try
-		{
+		
 			taxonomyClient.getTaxonByAnyName("Aos");
-		} catch (TaxonomyException e)
-		{
-			assertEquals(e.getMessage(),
-					     "Failed to search taxon by anyName : Aos (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/common-name/Aos)");
-		}
-
+		
 	}
 
 	@Test
@@ -127,14 +113,8 @@ public class TaxonomyClientTest
 		{
 			assertEquals(e.getMessage(),"commonName is null or empty to search taxon by commonName");
 		}
-		try
-		{
 			taxonomyClient.getTaxonByCommonName("homo");
-		} catch (TaxonomyException e)
-		{
-			assertEquals(e.getMessage(),
-					     "Failed to search taxon by commonName : homo (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/common-name/homo)");
-		}
+		
 	}
 
 	@Test
@@ -181,7 +161,7 @@ public class TaxonomyClientTest
 		} catch (TaxonomyException e)
 		{
 			assertEquals(e.getMessage(),
-					     "Failed to search taxon by commonName : Huan (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/common-name/Huan)");
+					     "Uknown commonName: Huan");
 		}
 		try
 		{
@@ -208,7 +188,7 @@ public class TaxonomyClientTest
 		} catch (TaxonomyException e)
 		{
 			assertEquals(e.getMessage(),
-					     "Failed to search taxon by scientificName : human (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/scientific-name/human)");
+					     "Uknown scientificName: human");
 		}
 		try
 		{
@@ -223,11 +203,10 @@ public class TaxonomyClientTest
 		} catch (TaxonomyException e)
 		{
 			assertEquals(e.getMessage(),
-					     "Failed to search taxon by scientificName : hum (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/scientific-name/hum)");
+					     "Uknown scientificName: hum");
 		}
 	}
 
-	@Test
 	public void testCheck_notSubmittableTaxid()
 	{
 		try
@@ -285,24 +264,16 @@ public class TaxonomyClientTest
 		} catch (TaxonomyException e)
 		{
 			assertEquals(e.getMessage(),
-					     "Failed to search taxon by anyName : hum (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/common-name/hum)");
+					     "Uknown anyName: hum");
 		}
 
 	}
-
 	@Test
 	public void testCheck_suggestTaxa()
 	{
 		List<Taxon> taxon = taxonomyClient.suggestTaxa("hum");
 		assertEquals(10, taxon.size());
-		try
-		{
-			taxon = taxonomyClient.suggestTaxa("mmm");
-		} catch (TaxonomyException e)
-		{
-			assertEquals(e.getMessage(),
-					     "Failed to search taxon by suggestForSubmission : mmm (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/suggest-for-submission/mmm?limit=10)");
-		}
+		taxon = taxonomyClient.suggestTaxa("mmm");
 		taxon = taxonomyClient.suggestTaxa("ohm");
 		assertEquals(2, taxon.size());
 		try
@@ -320,14 +291,7 @@ public class TaxonomyClientTest
 	{
 		List<Taxon> taxon = taxonomyClient.suggestTaxa("hum", 5);
 		assertEquals(5, taxon.size());
-		try
-		{
-			taxonomyClient.suggestTaxa("mmm", 5);
-		} catch (TaxonomyException e)
-		{
-			assertEquals(e.getMessage(),
-					     "Failed to search taxon by suggestForSubmission : mmm (http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/suggest-for-submission/mmm?limit=5)");
-		}
+		taxonomyClient.suggestTaxa("mmm", 5);
 		taxon = taxonomyClient.suggestTaxa("ohm", 5);
 		assertEquals(2, taxon.size());
 		try
@@ -356,4 +320,16 @@ public class TaxonomyClientTest
 		
 	}
 
+	@Test
+	public void testCheck_ServerError() throws MalformedURLException
+	{
+		try
+		{
+		JsonUtils.checkServerError(new URL("https://localhost:8080/testserver123"));
+		}catch(Exception e)
+		{
+			assertEquals(e.getMessage(),
+				     "Connection refused: connect(https://localhost:8080/testserver123)");
+		}
+	}
 }

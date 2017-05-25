@@ -66,5 +66,9 @@ public interface TaxonomyClient
 	Taxon getSubmittableTaxonByCommonName(String commonName) throws TaxonomyException;
 	
 	boolean isMetagenomic(Taxon taxon) throws TaxonomyException;
+	
+	boolean isTaxIdValid(Long taxId) throws TaxonomyException;
+	
+	boolean isScientificNameValid(String scientificName) throws TaxonomyException;
 
 }

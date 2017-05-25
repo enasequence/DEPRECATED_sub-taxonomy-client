@@ -3,10 +3,13 @@ package uk.ac.ebi.ena.taxonomy.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
 
 public class JsonUtils
 {
@@ -57,5 +60,42 @@ public class JsonUtils
 			}
 			return null;
 		}
+	}
+	
+	public static boolean checkServerError(URL url)
+	{
+		try{
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.connect();
+		if (con.getResponseCode() >= 500)
+		{
+			throw new TaxonomyException(new BufferedReader(
+					new InputStreamReader(con.getErrorStream())).lines()
+					.collect(Collectors.joining("\n")));
+		}
+		return false;
+		}catch(Exception e)
+		{
+			throw new TaxonomyException(e.getMessage()+"("+url.toString()+")");
+		}
+
+	}
+
+	public static boolean checkClientError(URL url) 
+	{
+		try
+		{
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.connect();
+		if (con.getResponseCode() >= 400 && con.getResponseCode() < 500)
+		{
+			return true;
+		}
+		return false;
+		}catch(Exception e)
+		{
+			throw new TaxonomyException(e.getMessage());
+		}
+
 	}
 }
