@@ -250,28 +250,6 @@ public abstract class TaxonomyClientBaseTest
 		assertTrue(taxons.isEmpty());
 	}
 
-
-
-	@Test
-	public void testCheck_suggestTaxawithLimitOne()
-	{
-		List<Taxon> taxons;
-
-		taxons = taxonomyClient.suggestTaxa("hum", 1);
-		assertEquals(1, taxons.size() );
-
-		taxons = taxonomyClient.suggestTaxa("mmm", 1);
-		assertTrue(taxons.isEmpty());
-
-		taxons = taxonomyClient.suggestTaxa("ohm", 1);
-		assertEquals(1, taxons.size());
-
-		taxons = taxonomyClient.suggestTaxa(null, 1);
-		assertTrue(taxons.isEmpty());
-
-		taxons = taxonomyClient.suggestTaxa("", 1);
-		assertTrue(taxons.isEmpty());
-	}
 	
 	@Test
 	public void testCheck_suggestTaxaWithMetagenome()

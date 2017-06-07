@@ -12,7 +12,7 @@
     }
 }*/
 
-def version_num = '2.2.2'
+def version_num = '2.2.3'
 
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
