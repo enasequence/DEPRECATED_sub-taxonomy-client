@@ -1,12 +1,9 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
+import uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon;
 import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-
 enum TaxonomyUrl
 {
 	scientificName("scientific-name"),
@@ -17,30 +14,22 @@ enum TaxonomyUrl
 
 	private final String url = "http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/%s/%s";
 	private String searchName;
-
 	private TaxonomyUrl(String searchName)
 	{
 		this.searchName = searchName;
 	}
-
 	public String get(String searchId)
 	{
 		return String.format(url, searchName, searchId);
 	}
 
-	public boolean isNotValid(String searchId) throws IOException
-	{
-		URL url = new URL(get(searchId).replaceAll(" ", "%20"));
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.connect();
-		System.out.println(con.getResponseCode());
-		return con.getResponseCode() >= 400;
-	}
-
 }
+
+
 
 public interface TaxonomyClient
 {
+
 	List<Taxon> suggestTaxa(String partialName) throws TaxonomyException;
 
 	List<Taxon> suggestTaxa(String partialName, boolean metagenome) throws TaxonomyException;
@@ -57,13 +46,13 @@ public interface TaxonomyClient
 
 	Taxon getTaxonByTaxid(Long taxId) throws TaxonomyException;
 
-	Taxon getSubmittableTaxonByTaxId(Long taxId) throws TaxonomyException;
+	SubmittableTaxon getSubmittableTaxonByTaxId(Long taxId) throws TaxonomyException;
 
-	Taxon getSubmittableTaxonByScientificName(String scientificName) throws TaxonomyException;
+	SubmittableTaxon getSubmittableTaxonByScientificName(String scientificName) throws TaxonomyException;
 
-	Taxon getSubmittableTaxonByAnyName(String anyName) throws TaxonomyException;
+	SubmittableTaxon getSubmittableTaxonByAnyName(String anyName) throws TaxonomyException;
 
-	Taxon getSubmittableTaxonByCommonName(String commonName) throws TaxonomyException;
+	SubmittableTaxon getSubmittableTaxonByCommonName(String commonName) throws TaxonomyException;
 	
 	boolean isMetagenomic(Taxon taxon) throws TaxonomyException;
 	

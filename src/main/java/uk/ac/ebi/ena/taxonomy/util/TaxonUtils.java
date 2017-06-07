@@ -1,57 +1,71 @@
 package uk.ac.ebi.ena.taxonomy.util;
 
+import org.json.JSONArray;
+
+import uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon;
+import uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon.SubmittableTaxonStatus;
+import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
+import uk.ac.ebi.ena.taxonomy.taxon.TaxonFactory;
+import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import static uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon.SubmittableTaxonStatus.AMBIGUOUS_TAXON;
+import static uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon.SubmittableTaxonStatus.NOT_SUBMITTABLE_TAXON;
+import static uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon.SubmittableTaxonStatus.SUBMITTABLE_TAXON;
+import static uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon.SubmittableTaxonStatus.UNKNOWN_TAXON;
 
-import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
-import uk.ac.ebi.ena.taxonomy.taxon.TaxonErrorCode;
-import uk.ac.ebi.ena.taxonomy.taxon.TaxonFactory;
-import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
 
 public class TaxonUtils
 {
-    
-	public static Taxon getSubmittableTaxon(List<Taxon> taxons, String searchId,String searchName) 
+
+	public static SubmittableTaxon getSubmittableTaxon(List<Taxon> taxons)
 	{
-		List<Taxon> submittableTaxons = new ArrayList<Taxon>();
-
-		if (taxons == null || taxons.size() == 0)
-			throw new TaxonomyException(TaxonErrorCode.UnknownTaxon.get(searchName,searchId));
-		for (Taxon taxon : taxons)
-		{
-			if (taxon.isSubmittable())
-				submittableTaxons.add(taxon);
+	    Taxon foundTaxon = null;
+        SubmittableTaxonStatus status = getSubmittableTaxonStatus(taxons);
+		if(SUBMITTABLE_TAXON == status){
+            foundTaxon = taxons.stream().filter(Taxon::isSubmittable).findFirst().orElse(null);
 		}
-		if (submittableTaxons.size() < 1)
-			throw new TaxonomyException(TaxonErrorCode.NotSubmittableTaxon.get(searchName,searchId));
-		if (submittableTaxons.size() > 1)
-			throw new TaxonomyException(TaxonErrorCode.AmbiguousTaxon.get(searchName,searchId));
-		if (submittableTaxons.size() == 1)
-			return submittableTaxons.get(0);
-
-		return null;
+        return new SubmittableTaxon( status , foundTaxon);
 	}
 
-	public static List<Taxon> getTaxon(URL url) throws IOException, JSONException
+
+	public static SubmittableTaxonStatus getSubmittableTaxonStatus(List<Taxon> taxons)
 	{
-		List<Taxon> taxons = new ArrayList<Taxon>();
-		TaxonFactory taxonFactory =new TaxonFactory();
-		JsonUtils jsonUtils = new JsonUtils();
-		if(!JsonUtils.checkServerError(url)&&JsonUtils.checkClientError(url))
-		{
-			return taxons;
+		List<Taxon> submittableTaxons = new ArrayList<>();
+
+		if ((taxons == null) || (taxons.isEmpty())) {
+            return UNKNOWN_TAXON;
+        }
+
+        taxons.forEach(taxon -> { if (taxon.isSubmittable()) submittableTaxons.add(taxon);});
+
+        if (submittableTaxons.size() == 1)
+			return SUBMITTABLE_TAXON ;
+        else if (submittableTaxons.size() > 1)
+            return AMBIGUOUS_TAXON;
+		else return NOT_SUBMITTABLE_TAXON;
+	}
+
+
+	public static List<Taxon> getTaxons(URL url)
+	{
+		List<Taxon> taxons = new ArrayList<>();
+        JsonUtils jsonUtils = new JsonUtils();
+		JSONArray jsonTaxonObject ;
+		try {
+			jsonTaxonObject = jsonUtils.getJsonArray(url);
+		} catch (IOException e) {
+			throw new TaxonomyException(e);
 		}
-			
-		JSONArray jsonTaxonObject = jsonUtils.getJsonArray(url);
 		if (jsonTaxonObject == null)
 		{
 			return taxons;
 		}
+		TaxonFactory taxonFactory =new TaxonFactory();
 		for (int i = 0; i < jsonTaxonObject.length(); i++)
 			taxons.add(taxonFactory.createTaxon(jsonTaxonObject.getJSONObject(i)));
 		

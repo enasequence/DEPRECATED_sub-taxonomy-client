@@ -1,24 +1,20 @@
 package uk.ac.ebi.ena.taxonomy.client;
 
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import uk.ac.ebi.ena.taxonomy.taxon.SubmittableTaxon;
 import uk.ac.ebi.ena.taxonomy.taxon.Taxon;
-import uk.ac.ebi.ena.taxonomy.taxon.TaxonErrorCode;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
 import uk.ac.ebi.ena.taxonomy.util.TaxonUtils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 public class TaxonomyClientImpl implements TaxonomyClient
 {
-	static Map<String, List<Taxon>> taxonScientificNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
-	static Map<Long, Taxon> taxonIdCache = Collections.synchronizedMap(new HashMap<Long, Taxon>());
-	static Map<String, List<Taxon>> taxonCommonNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
-	static Map<String, List<Taxon>> taxonAnyNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
 	private static final int DEFAULT_LIMIT = 10;
 
 	@Override
@@ -42,126 +38,106 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	@Override
 	public List<Taxon> suggestTaxa(String partialName, boolean metagenome, int limit) throws TaxonomyException
 	{
+		if(partialName == null) return new ArrayList<>();
 		String searchId = partialName + "?limit=" + limit;
-		try
-		{
-			URL url = new URL(TaxonomyUrl.suggestForSubmission.get(searchId).replaceAll(" ", "%20"));
-			if(!metagenome)
-			return TaxonUtils.getTaxon(url);
-			
-			return TaxonUtils.getTaxon(url).stream().filter(taxon->isMetagenomic(taxon)).collect(Collectors.toList());
-		
-		} catch (Exception e)
-		{
-			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.suggestForSubmission.get(searchId).replaceAll(" ", "%20")+")");
+		URL url;
+		try {
+			url = new URL(TaxonomyUrl.suggestForSubmission.get(searchId).replaceAll(" ", "%20"));
+		} catch (MalformedURLException e) {
+			throw new TaxonomyException(e);
+		}
+		if(!metagenome) {
+			return TaxonUtils.getTaxons(url);
+		} else {
+			return TaxonUtils.getTaxons(url).stream().filter(this::isMetagenomic).collect(Collectors.toList());
 		}
 	}
 
 	@Override
-	public Taxon getTaxonByTaxid(Long taxId) throws TaxonomyException
-	{
+	public Taxon getTaxonByTaxid(Long taxId) throws TaxonomyException	{
 		if (taxId == null)
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.taxid.name(), TaxonomyUrl.taxid.name()));
+			return null;
 		try
 		{
-			if (taxonIdCache.get(taxId) == null)
-			{
 				URL url = new URL(TaxonomyUrl.taxid.get(taxId.toString()).replaceAll(" ", "%20"));
-				List<Taxon> taxon = TaxonUtils.getTaxon(url);
-				taxonIdCache.put(taxId, taxon.size() > 0 ? taxon.get(0) : null);
-			}
-
+				List<Taxon> taxon = TaxonUtils.getTaxons(url);
+				return !taxon.isEmpty() ? taxon.get(0) : null;
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.taxid.get(taxId.toString()).replaceAll(" ", "%20")+")");
+			throw new TaxonomyException(e);
 		}
-		return taxonIdCache.get(taxId);
+		
 	}
 
 	@Override
 	public List<Taxon> getTaxonByScientificName(String scientificName)throws TaxonomyException
 	{
-		if (scientificName == null||scientificName.isEmpty())
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.scientificName.name(),TaxonomyUrl.scientificName.name()));
+		if (scientificName == null) new ArrayList<>();
 		try
 		{
-			if (taxonScientificNameCache.get(scientificName) == null)
-			{
 				URL url = new URL(TaxonomyUrl.scientificName.get(scientificName).replaceAll(" ", "%20"));
-				taxonScientificNameCache.put(scientificName, TaxonUtils.getTaxon(url));
-			}
-
+				return TaxonUtils.getTaxons(url);
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.scientificName.get(scientificName).replaceAll(" ", "%20")+")");
+			throw new TaxonomyException(e);
 		}
-		return taxonScientificNameCache.get(scientificName);
 	}
 
 	@Override
-	public List<Taxon> getTaxonByCommonName(String commonName)throws TaxonomyException
-	{
-		if (commonName == null||commonName.isEmpty())
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.commonName.name(), TaxonomyUrl.commonName.name()));
+	public List<Taxon> getTaxonByCommonName(String commonName)throws TaxonomyException	{
+		if (commonName == null||commonName.isEmpty()) return new ArrayList<>();
 		try
 		{
-			if (taxonCommonNameCache.get(commonName) == null)
-			{
 				URL url = new URL(TaxonomyUrl.commonName.get(commonName).replaceAll(" ", "%20"));
-				taxonCommonNameCache.put(commonName, TaxonUtils.getTaxon(url));
-			}
+				return TaxonUtils.getTaxons(url);
+			
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.commonName.get(commonName).replaceAll(" ", "%20")+")");
+			throw new TaxonomyException(e);
 		}
-		return taxonCommonNameCache.get(commonName);
 	}
 
 	@Override
 	public List<Taxon> getTaxonByAnyName(String anyName)throws TaxonomyException
 	{
 		if (anyName == null||anyName.isEmpty())
-			throw new TaxonomyException(TaxonErrorCode.NullableSearchId.get(TaxonomyUrl.anyName.name(), TaxonomyUrl.anyName.name()));
+			return new ArrayList<>();
 		try
 		{
-			if (taxonAnyNameCache.get(anyName) == null)
-			{
 				URL url = new URL(TaxonomyUrl.anyName.get(anyName).replaceAll(" ", "%20"));
-				taxonAnyNameCache.put(anyName, TaxonUtils.getTaxon(url));
-			}
-
+				return TaxonUtils.getTaxons(url);
 		} catch (Exception e)
 		{
-			throw new TaxonomyException(e.getMessage()+"("+ TaxonomyUrl.anyName.get(anyName).replaceAll(" ", "%20")+")");
+			throw new TaxonomyException(e);
 		}
-		return taxonAnyNameCache.get(anyName);
 	}
 
 	@Override
-	public Taxon getSubmittableTaxonByScientificName(String scientificName)	throws TaxonomyException
+	public SubmittableTaxon getSubmittableTaxonByScientificName(String scientificName)	throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByScientificName(scientificName),scientificName,TaxonomyUrl.scientificName.name());
-
-	}
-
-	@Override
-	public Taxon getSubmittableTaxonByAnyName(String anyName)throws TaxonomyException
-	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByAnyName(anyName), anyName,TaxonomyUrl.anyName.name());
+		return TaxonUtils.getSubmittableTaxon(getTaxonByScientificName(scientificName));
 
 	}
 
 	@Override
-	public Taxon getSubmittableTaxonByCommonName(String commonName)	throws TaxonomyException
+	public SubmittableTaxon getSubmittableTaxonByAnyName(String anyName)throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByCommonName(commonName), commonName,TaxonomyUrl.commonName.name());
+
+		return TaxonUtils.getSubmittableTaxon(getTaxonByAnyName(anyName));
 
 	}
 
 	@Override
-	public Taxon getSubmittableTaxonByTaxId(Long taxId)	throws TaxonomyException
+	public SubmittableTaxon getSubmittableTaxonByCommonName(String commonName)	throws TaxonomyException
 	{
-		return TaxonUtils.getSubmittableTaxon(getTaxonByTaxid(taxId) == null ? null: Arrays.asList(getTaxonByTaxid(taxId)), taxId.toString(),TaxonomyUrl.taxid.name());
+		return TaxonUtils.getSubmittableTaxon(getTaxonByCommonName(commonName));
+
+	}
+
+	@Override
+	public SubmittableTaxon getSubmittableTaxonByTaxId(Long taxId)	throws TaxonomyException
+	{
+		return TaxonUtils.getSubmittableTaxon(getTaxonByTaxid(taxId) == null ? null: Collections.singletonList(getTaxonByTaxid(taxId)));
 	}
 
 	@Override
@@ -180,32 +156,16 @@ public class TaxonomyClientImpl implements TaxonomyClient
 	@Override
 	public boolean isTaxIdValid(Long taxId) throws TaxonomyException
 	{
-		try
-		{
 			Taxon taxon = getTaxonByTaxid(taxId);
-			if (taxon == null)
-				return false;
-			return true;
-		} catch (TaxonomyException e)
-		{
-			return false;
-		}
+		return taxon != null;
+
 	}
 
 	@Override
 	public boolean isScientificNameValid(String scientificName)
 			throws TaxonomyException
 	{
-		try
-		{
 			List<Taxon> taxon = getTaxonByScientificName(scientificName);
-			if (taxon == null || taxon.isEmpty())
-				return false;
-			return true;
-		} catch (TaxonomyException e)
-		{
-			return false;
-		}
+		return !(taxon == null || taxon.isEmpty());
 	}
-
 }
