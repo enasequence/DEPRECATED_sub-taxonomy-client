@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static uk.ac.ebi.ena.taxonomy.util.TaxonUtils.getTaxons;
 
-public abstract class TaxonomyClientBaseTest
+public abstract class TaxonomyClientAbstractTest
 {
 	protected TaxonomyClient taxonomyClient;
 

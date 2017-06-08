@@ -11,11 +11,11 @@ import java.util.Map;
 
 public class TaxonomyClientCacheImpl implements TaxonomyClient
 {
-	TaxonomyClient taxonomyClient ;
-	static Map<String, List<Taxon>> taxonScientificNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
-	static Map<Long, Taxon> taxonIdCache = Collections.synchronizedMap(new HashMap<Long, Taxon>());
-	static Map<String, List<Taxon>> taxonCommonNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
-	static Map<String, List<Taxon>> taxonAnyNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
+	private TaxonomyClient taxonomyClient ;
+	private static Map<String, List<Taxon>> taxonScientificNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
+	private static Map<Long, Taxon> taxonIdCache = Collections.synchronizedMap(new HashMap<Long, Taxon>());
+	private static Map<String, List<Taxon>> taxonCommonNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
+	private static Map<String, List<Taxon>> taxonAnyNameCache = Collections.synchronizedMap(new HashMap<String, List<Taxon>>());
 	private static final int DEFAULT_LIMIT = 10;
 
 	public TaxonomyClientCacheImpl(TaxonomyClient taxonomyClient) {
@@ -116,32 +116,18 @@ public class TaxonomyClientCacheImpl implements TaxonomyClient
 	@Override
 	public boolean isTaxIdValid(Long taxId) throws TaxonomyException
 	{
-		try
-		{
-			Taxon taxon = getTaxonByTaxid(taxId);
-			if (taxon == null)
-				return false;
-			return true;
-		} catch (TaxonomyException e)
-		{
-			return false;
-		}
+		Taxon taxon = getTaxonByTaxid(taxId);
+		return taxon != null;
 	}
 
 	@Override
 	public boolean isScientificNameValid(String scientificName)
 			throws TaxonomyException
 	{
-		try
-		{
-			List<Taxon> taxon = getTaxonByScientificName(scientificName);
-			if (taxon == null || taxon.isEmpty())
-				return false;
-			return true;
-		} catch (TaxonomyException e)
-		{
-			return false;
-		}
+
+		List<Taxon> taxon = getTaxonByScientificName(scientificName);
+		return !(taxon == null || taxon.isEmpty());
+
 	}
 
 }

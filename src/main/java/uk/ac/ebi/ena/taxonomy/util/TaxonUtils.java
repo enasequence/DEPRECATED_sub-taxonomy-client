@@ -24,6 +24,7 @@ public class TaxonUtils
 
 	public static SubmittableTaxon getSubmittableTaxon(List<Taxon> taxons)
 	{
+		if(taxons == null) new SubmittableTaxon( UNKNOWN_TAXON , null);
 	    Taxon foundTaxon = null;
         SubmittableTaxonStatus status = getSubmittableTaxonStatus(taxons);
 		if(SUBMITTABLE_TAXON == status){

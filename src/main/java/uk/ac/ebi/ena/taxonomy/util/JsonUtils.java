@@ -7,8 +7,6 @@ import org.json.JSONObject;
 import uk.ac.ebi.ena.taxonomy.taxon.TaxonomyException;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,11 +54,11 @@ public class JsonUtils
 			{
 				str.append(currLine);
 			}
-			if (str != null && JsonUtils.isJSONArrayValid(str.toString()))
+			if (JsonUtils.isJSONArrayValid(str.toString()))
 			{
 				return new JSONArray(str.toString());
 			}
-			if (str != null && JsonUtils.isJSONObjectValid(str.toString()))
+			if (JsonUtils.isJSONObjectValid(str.toString()))
 			{
 				JSONArray jsonarrayObj= new JSONArray();
 				jsonarrayObj.put(new JSONObject(str.toString()));
@@ -70,15 +68,15 @@ public class JsonUtils
 		}
 	}
 
-	public InputStream getResponseStream(URL url){
-		HttpURLConnection connection = null;
+	private InputStream getResponseStream(URL url){
+		HttpURLConnection connection ;
 		try {
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.connect();
 			int code = connection.getResponseCode();
 			if(code == HTTP_OK ){
-				return toByteArrayOutputStream(connection.getInputStream()); // test remove return connection.getInputStream()
+				return connection.getInputStream();
 			} else if(code == HTTP_NOT_FOUND ){
 				return null;
 			}
@@ -89,27 +87,6 @@ public class JsonUtils
 			throw  new TaxonomyException("Error connecting to url:" + url.toString(), e);
 		}
 	}
-
-	// test remove
-	private static byte[] toByteArray(InputStream is) throws IOException {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			int nRead;
-			byte[] data = new byte[16384];
-
-			while ((nRead = is.read(data, 0, data.length)) != -1) {
-				buffer.write(data, 0, nRead);
-			}
-			buffer.flush();
-			byte[] bytes = buffer.toByteArray();
-			is.close();
-			return buffer.toByteArray();
-	}
-
-	private static ByteArrayInputStream toByteArrayOutputStream(InputStream is) throws IOException {
-		return new ByteArrayInputStream(toByteArray(is));
-	}
-
-
 
 
 }
