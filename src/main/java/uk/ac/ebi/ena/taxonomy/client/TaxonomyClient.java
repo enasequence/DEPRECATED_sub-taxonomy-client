@@ -12,7 +12,7 @@ enum TaxonomyUrl
 	commonName("common-name"),
 	suggestForSubmission("suggest-for-submission");
 
-	private final String url = "http://www.ebi.ac.uk/ena/data/taxonomy/v1/taxon/%s/%s";
+	private final String url = "http://www.ebi.ac.uk/ena/taxonomy/rest/%s/%s";
 	private String searchName;
 	private TaxonomyUrl(String searchName)
 	{
@@ -25,11 +25,8 @@ enum TaxonomyUrl
 
 }
 
-
-
 public interface TaxonomyClient
 {
-
 	List<Taxon> suggestTaxa(String partialName) throws TaxonomyException;
 
 	List<Taxon> suggestTaxa(String partialName, boolean metagenome) throws TaxonomyException;

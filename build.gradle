@@ -12,7 +12,7 @@
     }
 }*/
 
-def version_num = '2.2.4'
+def version_num = '2.2.5'
 
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
@@ -81,7 +81,7 @@ uploadArchives
   {
     repositories 
      {
-      mavenDeployer 
+     mavenDeployer 
           {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) 
           }
@@ -132,7 +132,7 @@ uploadArchives
             }
         }
 //local repository	
-		/* mavenDeployer 
+		 /*mavenDeployer 
 		 {
 		   repository(url: "http://ena-dev:8081/artifactory/libs-release-local"){
                 authentication(userName: artifactoryUsername, password: artifactoryPassword)
@@ -169,6 +169,7 @@ uploadArchives
                 }
             }
 		 }*/
+	//local repository
 		 }
 		 }
 		 
