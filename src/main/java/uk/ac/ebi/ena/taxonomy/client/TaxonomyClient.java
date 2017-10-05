@@ -12,7 +12,7 @@ enum TaxonomyUrl
 	commonName("common-name"),
 	suggestForSubmission("suggest-for-submission");
 
-	private final String url = "http://www.ebi.ac.uk/ena/taxonomy/rest/%s/%s";
+	private final String url = "https://www.ebi.ac.uk/ena/taxonomy/rest/%s/%s";
 	private String searchName;
 	private TaxonomyUrl(String searchName)
 	{

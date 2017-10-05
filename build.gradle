@@ -12,7 +12,7 @@
     }
 }*/
 
-def version_num = '2.2.5'
+def version_num = '2.2.6'
 
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
@@ -81,7 +81,7 @@ uploadArchives
   {
     repositories 
      {
-     mavenDeployer 
+  /*   mavenDeployer 
           {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) 
           }
@@ -130,9 +130,9 @@ uploadArchives
                     }
                 }
             }
-        }
+        }*/
 //local repository	
-		 /*mavenDeployer 
+		 mavenDeployer 
 		 {
 		   repository(url: "http://ena-dev:8081/artifactory/libs-release-local"){
                 authentication(userName: artifactoryUsername, password: artifactoryPassword)
@@ -162,16 +162,17 @@ uploadArchives
                 {
                     developer 
                     {
-                        id 'neilg'
-                        name 'Daniel Vaughan'
-                        email 'dvaughan@ebi.ac.uk'
+                        id 'kethi'
+                        name 'kethi reddy'
+                        email 'reddyk@ebi.ac.uk'
                     }
                 }
             }
-		 }*/
+		 }
 	//local repository
 		 }
 		 }
+		 
 		 
 
 
