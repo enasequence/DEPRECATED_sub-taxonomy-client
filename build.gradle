@@ -3,8 +3,11 @@ def version_num = '2.2.7'
 version = version_num
 ext.archivesBaseName = 'sub-taxonomy-client'
 
+ext.gitlab_project_id ='1143'
+
 apply plugin: 'signing'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -40,20 +43,10 @@ jar {
     }
 }
 
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from 'build/docs/javadoc'
-}
-
-artifacts {
-    archives javadocJar
-    archives jar
-    archives sourceJar
 }
 
 signing {
@@ -66,52 +59,32 @@ wrapper {
 }
 
 
-uploadArchives
-        {
-            repositories
-                    {
-                        mavenDeployer
-                                {
-                                    repository(url: "http://ena-dev:8081/artifactory/libs-release-local") {
-                                        authentication(userName: artifactoryUsername, password: artifactoryPassword)
-                                    }
-                                    pom.project
-                                            {
-                                                name 'sub-taxonomy-client'
-                                                packaging 'jar'
-                                                description 'Taxonomy Client'
-                                                url 'http://www.ebi.ac.uk/ena'
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
 
-                                                scm
-                                                        {
-                                                            url 'https://github.com/enasequence/sub-taxonomy-client'
-                                                        }
-
-                                                licenses
-                                                        {
-                                                            license
-                                                                    {
-                                                                        name 'The Apache License, Version 2.0'
-                                                                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                                                                    }
-                                                        }
-
-                                                developers
-                                                        {
-                                                            developer
-                                                                    {
-                                                                        id 'kethi'
-                                                                        name 'kethi reddy'
-                                                                        email 'reddyk@ebi.ac.uk'
-                                                                    }
-                                                        }
-                                            }
-                                }
-
-                    }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar { classifier "sources" }
         }
-		 
-		 
-
+    }
+    repositories {
+        maven {
+            // Project specific maven repository in Gitlab.
+            url "https://gitlab.ebi.ac.uk/api/v4/projects/${gitlab_project_id}/packages/maven"
+            // Developer token in Gitlab.
+            credentials(HttpHeaderCredentials) {
+                name = "Private-Token"
+                value = project.ext.properties.gitlab_private_token
+            }
+            authentication {
+                header( HttpHeaderAuthentication )
+            }
+        }
+    }
+}
 
 
