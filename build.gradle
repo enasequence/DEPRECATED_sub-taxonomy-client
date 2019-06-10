@@ -5,7 +5,6 @@ ext.archivesBaseName = 'sub-taxonomy-client'
 
 ext.gitlab_project_id ='1143'
 
-apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
