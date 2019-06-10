@@ -48,11 +48,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from 'build/docs/javadoc'
 }
 
-signing {
-    sign configurations.archives
-}
-
-
 wrapper {
     gradleVersion = '5.4.1'
 }
