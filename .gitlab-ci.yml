@@ -47,7 +47,7 @@ test:
   artifacts:
     expire_in: 1 week
     reports:
-      junit: "**/build/test-results/test/TEST-*.xml"
+      junit: build/test-results/test/TEST-*.xml
   cache:
     key: "$CI_COMMIT_REF_NAME"   
     paths:
