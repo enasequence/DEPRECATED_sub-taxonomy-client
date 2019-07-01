@@ -39,6 +39,7 @@ build:
       - ./build
       - ./.gradle
 
+
 test:
   stage: test
   script:
