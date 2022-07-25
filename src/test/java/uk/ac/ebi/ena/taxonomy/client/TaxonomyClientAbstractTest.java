@@ -252,6 +252,9 @@ public abstract class TaxonomyClientAbstractTest
 		taxons = taxonomyClient.suggestTaxa(null, 5);
 		assertTrue(taxons.isEmpty());
 
+		expectedException.expect(TaxonomyException.class);
+		expectedException.expectMessage("Invalid HTTP response code: 400");
+		
 		taxons = taxonomyClient.suggestTaxa("", 5);
 		assertTrue(taxons.isEmpty());
 	}

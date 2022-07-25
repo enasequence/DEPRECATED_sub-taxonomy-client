@@ -56,8 +56,9 @@ public class JsonUtils
 	 
 	public JSONArray getJsonArray(URL url) throws IOException, JSONException
 	{
-		if(getResponseStream(url) == null) return null;
-		try (InputStream is = getResponseStream(url); BufferedReader in = new BufferedReader(new InputStreamReader(is)))
+		InputStream responseStream  = getResponseStream(url);
+		if(responseStream == null) return null;
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(responseStream)))
 		{
 			String currLine = "";
 			StringBuilder str = new StringBuilder();
@@ -79,9 +80,8 @@ public class JsonUtils
 		}
 	}
 
-	private InputStream getResponseStream(URL url){
+	private InputStream getResponseStream(URL url) throws IOException {
 		HttpURLConnection connection ;
-		try {
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.connect();
@@ -90,13 +90,9 @@ public class JsonUtils
 				return connection.getInputStream();
 			} else if(code == HTTP_NOT_FOUND ){
 				return null;
-			}
-			else {
+			} else {
 				throw new TaxonomyException("Invalid HTTP response code: " + code);
 			}
-		} catch (Exception e){
-			throw  new TaxonomyException("Error connecting to url:" + url.toString(), e);
-		}
 	}
 
 

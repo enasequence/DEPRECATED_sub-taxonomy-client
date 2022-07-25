@@ -70,7 +70,7 @@ public class TaxonUtils
 		JSONArray jsonTaxonObject ;
 		try {
 			jsonTaxonObject = jsonUtils.getJsonArray(url);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new TaxonomyException(e);
 		}
 		if (jsonTaxonObject == null)
